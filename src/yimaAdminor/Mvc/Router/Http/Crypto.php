@@ -1,5 +1,5 @@
 <?php
-namespace cAdmin\Mvc\Router\Http;
+namespace yimaAdminor\Mvc\Router\Http;
 
 use Traversable;
 use Zend\Mvc\Router\Exception;
@@ -14,7 +14,7 @@ class Crypto implements RouteInterface
 	/**
 	 * Default session namespace
 	 */
-	const SESSION_NAMESPACE = 'cAdmin_Route_Crypto';
+	const SESSION_NAMESPACE = 'yimaAdminor_Route_Crypto';
 	
 	/**
 	 * Default session object member name

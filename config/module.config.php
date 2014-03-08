@@ -9,10 +9,10 @@ return array(
 	# this options here want to say Authentication strategy can be replacement
 	'service_manager' => array(
 		'invokables' => array(
-			'cAdmin\Authentication\Storage' => 'Zend\Authentication\Storage\NonPersistent',
+			'yimaAdminor\Authentication\Storage' => 'Zend\Authentication\Storage\NonPersistent',
 		),
 		'factories' => array(
-			'cAdmin\Authentication\Adapter' => function ($sm) 
+			'yimaAdminor\Authentication\Adapter' => function ($sm)
 			{
 				$digestResolver = new \Zend\Authentication\Adapter\Http\FileResolver(__DIR__.DS.'htpsswds');
 				#$basicResolver  = new \Zend\Authentication\Adapter\Http\FileResolver(__DIR__.DS.'htpsswds');
@@ -21,7 +21,7 @@ return array(
 					'accept_schemes' => 'digest',
 					'realm'          => 'Admin Panel',
 					// TODO: benzazr miresad ke baseurl baayad injaa ezaafe shavad
-					'digest_domains' => '/'.cAdmin\Module::ADMIN_ROUTE_SEGMENT,// behtar ast tavasote url(admin) saakhte shavad
+					'digest_domains' => '/'.yimaAdminor\Module::ADMIN_ROUTE_SEGMENT,// behtar ast tavasote url(admin) saakhte shavad
 					'nonce_timeout'  => 3600,
 				);
 				$authAdapter = new \Zend\Authentication\Adapter\Http($config);
@@ -86,13 +86,13 @@ return array(
 			'admin' => array( // admin is authorization name, can access later by serviceLocator exp. authorize\admin
 				'mode'     => 'route', # this mode looking for matched route name
 				'options'  => array('route' => 'admin/*'), 
-				'service'  => 'cAdmin\Authentication\Service', 
+				'service'  => 'yimaAdminor\Authentication\Service',
 				'isValid'  => null, 
-				'notValid' => array ('module'=>'cAdmin', 'controller'=>'Account', 'action'=>'forbidden' ),
+				'notValid' => array ('module'=>'yimaAdminor', 'controller'=>'Account', 'action'=>'forbidden' ),
 				'account-navigation' => array(
 					'logout'  => array(
 						'label' 	 => 'Logout',
-						'module'	 => 'cAdmin',
+						'module'	 => 'yimaAdminor',
 						'controller' => 'Account',
 						'action'	 =>	'logout',
 						# this way you can use navigation outside the admin route, exp. on frontend
@@ -104,11 +104,11 @@ return array(
 	),
 	
 	# zamaani ke dar admin hastim template haa az
-	# exp. template/*admin/*cadmin/index/dashboard.phtml khaande mishavad
+	# exp. template/*admin/*yimaadminor/index/dashboard.phtml khaande mishavad
 	'controllers' => array(
 		'invokables' => array(
 			# also this is automaticaly added by AdminRouteListener as invokable 
-			//'admin:cadmin\index' => 'cAdmin\Controller\Admin\IndexController'
+			//'admin:yimaadminor\index' => 'yimaAdminor\Controller\Admin\IndexController'
 		),
 	),
 		
@@ -120,7 +120,7 @@ return array(
                 'options' => array(
                     'route'    => '/'.self::ADMIN_ROUTE_SEGMENT,# /admin
                     'defaults' => array(
-                    	'module' 	   => 'cAdmin', // also you can use zend approach __NAMESPACE__ as alternate
+                    	'module' 	   => 'yimaAdminor', // also you can use zend approach __NAMESPACE__ as alternate
                         'controller'   => 'Index',
                         'action'       => 'dashboard',
                     ),

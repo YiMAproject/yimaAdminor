@@ -1,0 +1,32 @@
+<?php if ($logged_out) { ?>
+<div class="errorwrapper error403">
+	<div class="errorcontent">
+    	<h1>You Loggout successfully.</h1>
+    	<br/>                
+        <h3>To login again:</h3>
+        <br/>
+       	<ul>
+        	<li><a href="#" onclick="location.href=''">Refresh the page.</a> (Press F5)</li>
+            <li>When asking for username and password, enter correct idential.</li>
+        </ul>
+        <br>
+    	<button class="stdbtn btn_orange" onclick="location.href=''">Login To System</button>
+   	</div>
+	<!--errorcontent-->
+</div>
+<!--errorwrapper-->
+<?php } else { ?>
+<div class="errorwrapper error403">
+	<div class="errorcontent">
+		<h3>To logout do as following</h3>
+		<br/>
+		<ul>
+			<li><a href="#" onclick="location.href=''">Refresh the page.</a> (Press F5)</li>
+			<li>When Asking username and password, hit Cancel or press escape key.</li>
+		</ul>
+		<br />
+	</div>
+	<!--errorcontent-->
+</div>
+<!--errorwrapper-->
+<?php } ?>

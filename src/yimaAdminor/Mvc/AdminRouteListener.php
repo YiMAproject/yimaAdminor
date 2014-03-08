@@ -1,5 +1,5 @@
 <?php
-namespace cAdmin\Mvc;
+namespace yimaAdminor\Mvc;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
@@ -42,15 +42,15 @@ class AdminRouteListener implements ListenerAggregateInterface
     	}
     	
     	// we are not in admin route
-    	if ($matchedRoute !== \cAdmin\Module::ADMIN_ROUTE_NAME) {
+    	if ($matchedRoute !== \yimaAdminor\Module::ADMIN_ROUTE_NAME) {
     		return;
     	}
     	
     	/*
-    	 * Set cAdmin\Module::isOnAdmin to true
+    	 * Set yimaAdminor\Module::isOnAdmin to true
     	*/
     	$serviceLocator = $e->getApplication()->getServiceManager();
-    	$serviceLocator->get('cAdminModule')->setOnAdmin();
+    	$serviceLocator->get('yimaAdminorModule')->setOnAdmin();
     }
 
     /**
@@ -66,13 +66,13 @@ class AdminRouteListener implements ListenerAggregateInterface
     public function makeDefaultRouteController(MvcEvent $e)
     {
     	$serviceLocator = $e->getApplication()->getServiceManager();
-    	if (! $serviceLocator->get('cAdminModule')->isOnAdmin() ) {
+    	if (! $serviceLocator->get('yimaAdminorModule')->isOnAdmin() ) {
     		return;
     	}
     	
     	$matches = $e->getRouteMatch();
         $matchedRoute = $matches->getMatchedRouteName();
-        if (strstr($matchedRoute,'/') && $matchedRoute != \cAdmin\Module::ADMIN_ROUTE_NAME.'/default'){
+        if (strstr($matchedRoute,'/') && $matchedRoute != \yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default'){
         	// we don't do anything on none default route scheme
         	return;
         }
@@ -85,7 +85,7 @@ class AdminRouteListener implements ListenerAggregateInterface
         // masalan dar MvcPage::isActive() estefaade darad, in hamaan controller i ast ke dar route ta'rif shode
         $matches->setParam(ModuleRouteListener::ORIGINAL_CONTROLLER, $orginController);
         
-        $controller 	= \cAdmin\Module::ADMIN_ROUTE_SEGMENT . ':' . $module . '\\' . $orginController;
+        $controller 	= \yimaAdminor\Module::ADMIN_ROUTE_SEGMENT . ':' . $module . '\\' . $orginController;
         $controller 	= strtolower($controller);
         
         /* get serviceLocator and retrieve ControllerLoader if $controller registered return it

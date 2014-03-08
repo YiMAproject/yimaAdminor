@@ -1,7 +1,7 @@
 <?php
-namespace cAdmin\Navigation\Service;
+namespace yimaAdminor\Navigation\Service;
 
-use cAdmin;
+use yimaAdminor;
 use Zend\Navigation\Service\DefaultNavigationFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Mvc\Router\RouteMatch;
@@ -29,7 +29,7 @@ class NavigationFactory extends DefaultNavigationFactory
     		if ($hasMvc) {
     			// add default admin route name to navigation
     			if (!isset($page['route'])) {
-    				$page['route'] = cAdmin\Module::ADMIN_ROUTE_NAME.'/default';
+    				$page['route'] = yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default';
     			}
     			
     			// check mikonim agar dar route e "admin/default" boodim ... default apporach {
@@ -39,9 +39,9 @@ class NavigationFactory extends DefaultNavigationFactory
     				$routeName = substr($routeName,0,strpos($routeName,'/'));
     			}
     			
-    			if ($routeName == cAdmin\Module::ADMIN_ROUTE_NAME 
-    				&& ($page['route'] == cAdmin\Module::ADMIN_ROUTE_NAME.'/default' 
-    					|| $page['route'] == cAdmin\Module::ADMIN_ROUTE_NAME.'/default/query'
+    			if ($routeName == yimaAdminor\Module::ADMIN_ROUTE_NAME
+    				&& ($page['route'] == yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default'
+    					|| $page['route'] == yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default/query'
     				   )
     			) {
     				// we must put 'module' inside 'params'

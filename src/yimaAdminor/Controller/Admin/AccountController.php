@@ -1,5 +1,5 @@
 <?php
-namespace cAdmin\Controller\Admin;
+namespace yimaAdminor\Controller\Admin;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -14,7 +14,7 @@ class AccountController extends AbstractActionController
     {
     	$sl = $this->getServiceLocator();
     	
-    	$authService = $sl->get('cAdmin\Authentication\Service');
+    	$authService = $sl->get('yimaAdminor\Authentication\Service');
     	$authAdapter = $authService->getAdapter();
     	if (! $authAdapter instanceof HttpAuthenticate) {
     		throw new Exception(__CLASS__.'::'.__FUNCTION__.' only work for Http Authentication Service Adapter.');
@@ -25,7 +25,7 @@ class AccountController extends AbstractActionController
     	
     	if (! ($headers->has('Authorization') xor $headers->has('Proxy-Authorization')) ) {
     		// we are not authorized yet 
-    		$this->redirect()->toRoute(\cAdmin\Module::ADMIN_ROUTE_NAME);
+    		$this->redirect()->toRoute(\yimaAdminor\Module::ADMIN_ROUTE_NAME);
     		return;
     	}
     	
@@ -33,7 +33,7 @@ class AccountController extends AbstractActionController
     	
     	// enabling logout session
     	$sessionManager   = new SessionManager();
-    	$sessionContainer = new Container('cAdminLogout',$sessionManager);
+    	$sessionContainer = new Container('yimaAdminorLogout',$sessionManager);
     	if (!isset($sessionContainer->logoutFlag)) {
     		$sessionContainer->setExpirationHops(1, null, true);
     		$sessionContainer->logoutFlag = true;
@@ -60,7 +60,7 @@ class AccountController extends AbstractActionController
     		$result = $authService->authenticate();
     		/* if (! $result->isValid()) {
     			// successfully logout
-    			$this->redirect()->toRoute(\cAdmin\Module::ADMIN_ROUTE_NAME);
+    			$this->redirect()->toRoute(\yimaAdminor\Module::ADMIN_ROUTE_NAME);
     			return;
     		} */
     	}

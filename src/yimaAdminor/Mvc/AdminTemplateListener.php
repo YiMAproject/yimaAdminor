@@ -1,5 +1,5 @@
 <?php
-namespace cAdmin\Mvc;
+namespace yimaAdminor\Mvc;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
@@ -34,7 +34,7 @@ class AdminTemplateListener implements ListenerAggregateInterface
         }
         
         $serviceLocator = $e->getApplication()->getServiceManager();
-        if (false == $serviceLocator->get('cAdminModule')->isOnAdmin()) {
+        if (false == $serviceLocator->get('yimaAdminorModule')->isOnAdmin()) {
         	// we are not on admin
         	return;
         }

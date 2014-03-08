@@ -1,8 +1,7 @@
 <?php
-namespace cAdmin\Controller\Admin;
+namespace yimaAdminor\Controller\Admin;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {

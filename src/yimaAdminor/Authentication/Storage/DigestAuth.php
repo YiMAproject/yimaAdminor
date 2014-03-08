@@ -1,5 +1,5 @@
 <?php
-namespace cAdmin\Authentication\Storage;
+namespace yimaAdminor\Authentication\Storage;
 
 use Zend\Authentication\Storage\StorageInterface;
 
