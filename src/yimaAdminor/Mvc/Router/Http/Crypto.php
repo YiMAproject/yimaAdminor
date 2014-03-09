@@ -39,6 +39,13 @@ class Crypto implements RouteInterface
     protected $params;
 
     /**
+     * Object to encrypt and decrypt queries
+     *
+     * @var CryptionInterface
+     */
+    protected $cryptionObject;
+
+    /**
      * Construct
      *
      * @param $route
@@ -152,6 +159,34 @@ class Crypto implements RouteInterface
     }
 
     /**
+     * Get Encrypt Decrypt Object
+     *
+     * @return CryptionInterface|Crypto\CryptionBase64
+     */
+    public function getCryption()
+    {
+        if (!$this->cryptionObject) {
+            $this->cryptionObject = new Crypto\CryptionBase64();
+        }
+
+        return $this->cryptionObject;
+    }
+
+    /**
+     * Set Encrypt Decrypt Object
+     *
+     * @param CryptionInterface $crypt
+     *
+     * @return $this
+     */
+    public function setCryption(CryptionInterface $crypt)
+    {
+        $this->cryptionObject = $crypt;
+
+        return $this;
+    }
+
+    /**
      * Decode Query
      * - to match uri
      *
@@ -161,7 +196,9 @@ class Crypto implements RouteInterface
      */
     protected function decodeQuery($query)
     {
-    	return urldecode(base64_decode($query));
+        $decoded = $this->getCryption()->decode($query);
+
+    	return urldecode($decoded);
     }
 
     /**
@@ -174,7 +211,9 @@ class Crypto implements RouteInterface
      */
     protected function encodeQuery($query)
     {
-    	return urlencode(base64_encode($query));
+        $encoded = $this->getCryption()->encode($query);
+
+    	return urlencode($encoded);
     }
 
     /**
