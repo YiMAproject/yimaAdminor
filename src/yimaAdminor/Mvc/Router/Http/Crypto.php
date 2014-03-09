@@ -9,27 +9,20 @@ use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Session\Container as SessionContainer;
 
+/**
+ * Class Crypto
+ *
+ * @package yimaAdminor\Mvc\Router\Http
+ */
 class Crypto implements RouteInterface
 {
 	/**
-	 * Default session namespace
-	 */
-	const SESSION_NAMESPACE = 'yimaAdminor_Route_Crypto';
-	
-	/**
-	 * Default session object member name
-	 */
-	const SESSION_SECURITY_KEY = 'security_key';
-	
-	/**
 	 * RouteInterface to match.
+     * exp. /browse/
 	 *
 	 * @var string
 	 */
 	protected $route;
-	
-	
-	protected $params;
 	
     /**
      * Default values.
@@ -37,37 +30,38 @@ class Crypto implements RouteInterface
      * @var array
      */
     protected $defaults;
-    
-    /**
-     * Object to proxy $_SESSION storage
-     *
-     * @var SessionContainer
-     */
-    protected $session;
 
+    /**
+     * Any optional Route options that may have used
+     *
+     * @var array
+     */
+    protected $params;
+
+    /**
+     * Construct
+     *
+     * @param $route
+     * @param array $options
+     */
     public function __construct($route, array $options = array())
     {
     	$this->route    = $route;
-    	
+
+        // default options of route, exp. [controller] => 'Index'
         $this->defaults = $options['defaults'];
         unset($options['defaults']);
-        
-        if (!is_array($options)) {
-        	$options = array();
-        }
-        
-        $this->params = $options;
-        
-        $this->session   = new SessionContainer(self::SESSION_NAMESPACE);
+
+        // route options
+        $options = (!is_array($options)) ? array() : $options;
+        $this->params  = $options;
     }
 
     /**
-     * factory(): defined by RouteInterface interface.
+     * Create a new route with given options.
      *
-     * @see    Route::factory()
-     * @param  array|Traversable $options
-     * @throws Exception\InvalidArgumentException
-     * @return Literal
+     * @param  array|\Traversable $options
+     * @return void
      */
     public static function factory($options = array())
     {
@@ -117,9 +111,6 @@ class Crypto implements RouteInterface
         	}
         }
         
-        
-        // Last: check from queries to match
-        
         # get encoded query
         $encodQuery = $request->getQuery()->toArray();
         
@@ -132,14 +123,14 @@ class Crypto implements RouteInterface
          *       khaali va pas az aan be maraateb parameter haa ham meghdaar e khaali begirand
          */
         $query  = $this->decodeQuery($encodQuery);
-        parse_str($query,$queries);
+        parse_str($query, $queries);
         
         /*
          * Route default factory options 
          */
-        $params = array_merge($this->defaults,$this->params);
-        $params = array_merge($params,$queries);
-        
+        $params = array_merge($this->defaults, $this->params);
+        $params = array_merge($params, $queries);
+
        	return new RouteMatch($params, strlen($this->route));
     }
 
@@ -156,47 +147,43 @@ class Crypto implements RouteInterface
     	$this->assembledParams = $params;
     	
     	$query = http_build_query($params);
+
         return $this->route.'?'.$this->encodeQuery($query);
     }
 
     /**
-     * getAssembledParams(): defined by RouteInterface interface.
+     * Decode Query
+     * - to match uri
      *
-     * @see    Route::getAssembledParams
+     * @param $query
+     *
+     * @return string
+     */
+    protected function decodeQuery($query)
+    {
+    	return urldecode(base64_decode($query));
+    }
+
+    /**
+     * Encode Query
+     * - to assemble uri
+     *
+     * @param $query
+     *
+     * @return string
+     */
+    protected function encodeQuery($query)
+    {
+    	return urlencode(base64_encode($query));
+    }
+
+    /**
+     * Get a list of parameters used while assembling.
+     *
      * @return array
      */
     public function getAssembledParams()
     {
         return $this->assembledParams;
-    }
-    
-    protected function decodeQuery($query)
-    {
-    	$key = $this->getSecurityKey();
-    	\Datasecurity_Ancryptst::setKey($key);
-    
-    	return urldecode(\Datasecurity_Ancryptst::decrypt($query));
-    }
-    
-    protected function encodeQuery($query)
-    {
-    	$key = $this->getSecurityKey();
-    	\Datasecurity_Ancryptst::setKey($key);
-    
-    	return urlencode(\Datasecurity_Ancryptst::encrypt($query));
-    }
-    
-    /**
-     * security key raaa baraaaie encode va decode kardan e Query bar migardaanad
-     *
-     */
-    protected function getSecurityKey()
-    {
-    	if (!isset($this->session->{self::SESSION_SECURITY_KEY})) {
-    		$key = uniqid();
-    		$this->session->{self::SESSION_SECURITY_KEY} = $key;
-    	} 
-    	
-    	return $this->session->{self::SESSION_SECURITY_KEY};
     }
 }
