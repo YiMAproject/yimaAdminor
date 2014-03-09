@@ -6,9 +6,14 @@ use yimaAdminor\Mvc\AdminTemplateListener;
 use Zend\Authentication;
 
 use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\LocatorRegisteredInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\Router\SimpleRouteStack as HttpSimpleRouteStack;
+use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class Module
@@ -17,6 +22,9 @@ use Zend\Mvc\MvcEvent;
  */
 class Module implements
     BootstrapListenerInterface,
+    ServiceProviderInterface,
+    ConfigProviderInterface,
+    AutoloaderProviderInterface,
     LocatorRegisteredInterface
 {
 	const ADMIN_ROUTE_NAME	  = 'admin';
@@ -34,20 +42,48 @@ class Module implements
     public function onBootstrap(EventInterface $e)
     {
         /** @var $e MvcEvent */
-        $routePluginManager = $e->getRouter()->getRoutePluginManager();
-    	if (! $routePluginManager->has('crypto') ) {
-    		$routePluginManager->setInvokableClass('crypto','yimaAdminor\Mvc\Router\Http\Crypto');
-    	}
-    	
+        /** @var $r \Zend\Mvc\Router\Http\TreeRouteStack */
+        $r = $e->getRouter();
+        if ($r instanceof HttpSimpleRouteStack) {
+            /** @var $routePluginManager \Zend\Mvc\Router\RoutePluginManager */
+            $routePluginManager = $r->getRoutePluginManager();
+            if ($routePluginManager->has('yimaAdminorRouter') ){ //full name for easy search within codes
+                throw new \Exception(
+                    sprintf(
+                        'Router "yimaAdminor" is not registered on RouterPlugin(%s).',
+                        get_class($routePluginManager)
+                    )
+                );
+            }
+
+            // Set RouteInterface from config {
+            $router = null;
+            $sm     = $e->getApplication()->getServiceManager();
+            $config = $sm->get('config');
+            if (isset($config['yima_adminor']) && is_array($config['yima_adminor'])
+                && isset($config['yima_adminor']['router'])
+            ) {
+                $router = $config['yima_adminor']['router'];
+            }
+
+            // plugin manager will validate router (isValid)
+            $routePluginManager->setInvokableClass(
+                'yimaAdminorRouter',
+                $router
+            );
+            // ... }
+        } // end of if HttpRouteStack
+
+
     	// .........................................................................
         $events	= $e->getApplication()->getEventManager();
         
         // determine if we are on admin set specific admin controller to router
-        $events->attach( new AdminRouteListener() );
+        $events->attach(new AdminRouteListener());
         
         // determine if we are on admin add pathStack to yimaAdminor template folder and
         // set admin prefix to viewModel layout on render
-        $events->attach( new AdminTemplateListener() );
+        $events->attach(new AdminTemplateListener());
     }
     
     
@@ -67,56 +103,79 @@ class Module implements
     {
     	return $this->isOnAdmin;
     }
-    
-    // ................................................................................................
-    
+
+    /**
+     * Expected to return \Zend\ServiceManager\Config object or array to
+     * seed such an object.
+     *
+     * @return array|\Zend\ServiceManager\Config
+     */
     public function getServiceConfig()
     {
     	return array(
     		'factories' => array (
-    			'admin\navigation' => 'yimaAdminor\Navigation\Service\NavigationFactory',
-    			#
+    			'yimaAdminor.navigation' => 'yimaAdminor\Navigation\Service\NavigationFactory',
     			'yimaAdminor\Authentication\Service' => function ($sm) {
     				return new Authentication\AuthenticationService(
     					$sm->get('yimaAdminor\Authentication\Storage'),
     					$sm->get('yimaAdminor\Authentication\Adapter')
     				);
     			},
-    		), 		
+    		),
     	);
     }
-    
+
+    /**
+     * Returns configuration to merge with application configuration
+     *
+     * @return array|\Traversable
+     */
     public function getConfig()
     {
-         $config = include __DIR__ . '/../../config/module.config.php';
-        
-         // set asset manager config, related to template name and folder
-         if (isset($config['admin']) && is_array($config['admin'])) {
-         	if ( isset($config['admin']['template_folder']) && !empty($config['admin']['template_folder']) ) {
-         		$path = $config['admin']['template_folder'].
-         				(
-         					(isset($config['admin']['template_name']) && !empty($config['admin']['template_name']))
-         						? DS.$config['admin']['template_name'] : ''
-         				)
-         				.DS.'www';
-         	}
-         }
-         
-        $config = array_merge_recursive($config,
-        	array(
-        		'asset_manager' => array(
-        			'resolver_configs' => array(
-        				'paths' => array(
-        					$path,
-        				),
-        			),
-        		)
-        	)		
+        $config = include __DIR__ . '/../../config/module.config.php';
+
+        return ArrayUtils::merge(
+            array(
+                'router' => array(
+                    'routes' => array(
+                        \yimaAdminor\Module::ADMIN_ROUTE_NAME => array(
+                            'type'    => 'Literal',
+                            'options' => array(
+                                # /admin
+                                'route'    => '/'.\yimaAdminor\Module::ADMIN_ROUTE_SEGMENT,
+                                'defaults' => array(
+                                    'module' 	   => 'yimaAdminor', // also you can use zend approach __NAMESPACE__ as alternate
+                                    'controller'   => 'Index',
+                                    'action'       => 'dashboard',
+                                ),
+                            ),
+                            'may_terminate' => true,
+                            'child_routes' => array(
+                                'default' => array(
+                                    'type'    => 'yimaAdminorRouter',
+                                    'options' => array(
+                                        'route' => '/',
+                                        'defaults' 	 => array(
+                                            'controller' => 'Index',
+                                            'action'     => 'dashboard',
+                                        ),
+                                    ),
+                                    'may_terminate' => true,
+                                ),
+                            ),
+                        ),
+                    ),
+                ),// end of router
+            ),
+            $config
         );
-        
-        return $config;
     }
 
+    /**
+     * Return an array for passing to Zend\Loader\AutoloaderFactory.
+     *
+     * @return array
+     */
     public function getAutoloaderConfig()
     {
         return array(

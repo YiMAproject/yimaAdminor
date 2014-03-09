@@ -1,10 +1,27 @@
 <?php
 return array(
+    'yima_adminor' => array(
+        # invokable class as a service for route plugin manager
+        'router' => 'yimaAdminor\Mvc\Router\Http\Crypto',
+    ),
+
 	'admin' => array(
 		'auto_set_controllers' => true,
 		'template_folder' 	   => realpath(__DIR__.'/../template'),
 		'template_name' 	   => 'amanda',
 	),
+
+    'yima_widgetator' => array(
+        'invokables' => array(
+            'uitools.navigation' => 'yimaAdminor\Widget\NavigationMenu\Widget',
+        ),
+    ),
+
+    'view_manager' => array(
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
+        ),
+    ),
 		
 	# this options here want to say Authentication strategy can be replacement
 	'service_manager' => array(
@@ -53,10 +70,10 @@ return array(
 					),
 					'website'  => array(
 						'label' 	 => 'Web Site View',
-						'module'	 => 'cApplication',
+						'module'	 => 'Application',
 						#'controller' => 'Index', // as default
 						#'action'	 =>	'dashboard', // as default
-						'params'	 => array('this'=>'that'),
+						'params'	 => array('this' => 'that'),
 						'icon'		 => 'icon-flatscreen',	
 					),
 					'rayaOnline' => array(
@@ -111,36 +128,4 @@ return array(
 			//'admin:yimaadminor\index' => 'yimaAdminor\Controller\Admin\IndexController'
 		),
 	),
-		
-    'router' => array(
-        'routes' => array(
-        	# *admin* route name
-            self::ADMIN_ROUTE_NAME => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/'.self::ADMIN_ROUTE_SEGMENT,# /admin
-                    'defaults' => array(
-                    	'module' 	   => 'yimaAdminor', // also you can use zend approach __NAMESPACE__ as alternate
-                        'controller'   => 'Index',
-                        'action'       => 'dashboard',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                	# pas az in route baayad emkaan e ersaal parameter ham daashte baashim /order/a-z or /id/4
-                    'default' => array(
-                        'type'    => 'Crypto',
-                        'options' => array(
-                        	'route' => '/', #route prefix for determine this		
-                            'defaults' 	 => array(
-                            	'controller' => 'Index',
-                            	'action'     => 'dashboard',
-                            ),
-                        ),
-                    	'may_terminate' => true,
-                    ),
-                ),
-            ),
-        ),
-    ),// end of router
 );
