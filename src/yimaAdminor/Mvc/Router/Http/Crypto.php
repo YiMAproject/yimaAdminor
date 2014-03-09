@@ -7,7 +7,8 @@ use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\Session\Container as SessionContainer;
+
+use yimaAdminor\Mvc\Router\Http\Crypto\CryptionInterface;
 
 /**
  * Class Crypto
@@ -55,12 +56,37 @@ class Crypto implements RouteInterface
     {
     	$this->route    = $route;
 
+        /* 'child_routes' => array(
+        'default' => array(
+            ...
+            'options' => array(
+                'route' => '/',
+                'defaults' 	 => array(
+                    'controller' => 'Index',
+                    ...
+                ),
+                'cryption' => '\yimaAdminor\Mvc\Router\Http\Crypto\CryptionBase64'
+            ),
+        ),
+        */
+
         // default options of route, exp. [controller] => 'Index'
         $this->defaults = $options['defaults'];
         unset($options['defaults']);
 
         // route options
         $options = (!is_array($options)) ? array() : $options;
+        if (isset($options['cryption'])) {
+            // set crypto from router config
+            $cryption = $options['cryption'];
+            $cryption = (is_string($cryption))
+                ? (class_exists($cryption)) ? new $cryption() : $cryption
+                : $cryption;
+
+            $this->setCryption($cryption);
+            unset($options['cryption']);
+        }
+
         $this->params  = $options;
     }
 

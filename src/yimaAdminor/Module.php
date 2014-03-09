@@ -154,11 +154,17 @@ class Module implements
                                 'default' => array(
                                     'type'    => 'yimaAdminorRouter',
                                     'options' => array(
-                                        'route' => '/',
+                                        # we can use any word after /admin[/word]/ to browse child routes
+                                        'route' => '/', //'/browse/',
                                         'defaults' 	 => array(
                                             'controller' => 'Index',
                                             'action'     => 'dashboard',
                                         ),
+                                        # we can pass any options to Router
+                                        // 'option' => 'value',
+
+                                        # encrypt and decrypt class name or object() to de/encode queries for Crypto router
+                                        //'cryption' => '\yimaAdminor\Mvc\Router\Http\Crypto\CryptionBase64'
                                     ),
                                     'may_terminate' => true,
                                 ),
