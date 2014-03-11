@@ -2,7 +2,6 @@
 namespace yimaAdminor\Mvc\Router\Http;
 
 use Traversable;
-use Zend\Mvc\Router\Exception;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Mvc\Router\Http\RouteInterface;
@@ -17,6 +16,11 @@ use yimaAdminor\Mvc\Router\Http\Crypto\CryptionInterface;
  */
 class Crypto implements RouteInterface
 {
+    /**
+     * @var int Maximum Priority for Admin Detection Route
+     */
+    protected $priority = 100000;
+
 	/**
 	 * RouteInterface to match.
      * exp. /browse/
@@ -92,16 +96,19 @@ class Crypto implements RouteInterface
 
     /**
      * Create a new route with given options.
+     * factory(): defined by RouteInterface interface.
      *
      * @param  array|\Traversable $options
-     * @return void
+     *
+     * @throws \Exception
+     * @return Crypto
      */
     public static function factory($options = array())
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
         } elseif (!is_array($options)) {
-            throw new Exception\InvalidArgumentException(__METHOD__ . ' expects an array or Traversable set of options');
+            throw new \Exception(__METHOD__ . ' expects an array or Traversable set of options');
         }
         
         if (!isset($options['route']) || empty($options['route'])) {
@@ -129,40 +136,43 @@ class Crypto implements RouteInterface
     public function match(Request $request, $pathOffset = null)
     {
         if (!method_exists($request, 'getQuery') && !method_exists($request, 'getUri')) {
-            return null;
+            return false;
         }
         
-        // First: determine that we have on correct route matching 
+        // determine that we have on correct route matching
+        /** @var $uri \Zend\Uri\Http */
+        /** @var $request \Zend\Http\PhpEnvironment\Request */
         $uri  = $request->getUri();
         $path = $uri->getPath();
-        
+
         if ($pathOffset !== null) {
         	if ($pathOffset >= 0 && strlen($path) >= $pathOffset) {
-        		if ($this->route !== substr($path,$pathOffset)) {
+        		if ($this->route !== substr($path, $pathOffset)) {
+                    // we are not in admin child routes
         			return null;
         		}
         	}
         }
-        
-        # get encoded query
-        $encodQuery = $request->getQuery()->toArray();
-        
-        // decode query
-        $queries = array();
-        list($encodQuery) = array_keys($encodQuery);
-        
-        /* TODO: decodeQuery() bar rooie string haaii ke dast kaari shode ast meghdaar e naa moshakhas bar
-         * 		 migardaanad ke ghaabele tashkhis nist ke hengaame parse_str mojeb mishavad $queries meghdaar e
-         *       khaali va pas az aan be maraateb parameter haa ham meghdaar e khaali begirand
-         */
-        $query  = $this->decodeQuery($encodQuery);
-        parse_str($query, $queries);
-        
+
+        # get route params
+        // get request query string (?qD2D32#es...EncODed | ?module=Application&encoded=none)
+        $reqUri      = $request->getRequestUri();
+        if (($qstack = strpos($reqUri, '?')) === false) {
+            // we dont have any parameter to match
+            return false;
+        }
+
+        $queryString = substr($reqUri, $qstack+1);
+        $queryString = $this->decodeQuery($queryString);
+
+        $routeParams = array();
+        parse_str($queryString, $routeParams);
+
         /*
          * Route default factory options 
          */
-        $params = array_merge($this->defaults, $this->params);
-        $params = array_merge($params, $queries);
+        $params = array_merge($this->defaults, array()/*$this->params*/); // we don't want options as default values
+        $params = array_merge($params, $routeParams);
 
        	return new RouteMatch($params, strlen($this->route));
     }
@@ -224,7 +234,7 @@ class Crypto implements RouteInterface
     {
         $decoded = $this->getCryption()->decode($query);
 
-    	return urldecode($decoded);
+    	return $decoded;
     }
 
     /**
@@ -239,7 +249,7 @@ class Crypto implements RouteInterface
     {
         $encoded = $this->getCryption()->encode($query);
 
-    	return urlencode($encoded);
+    	return $encoded;
     }
 
     /**
