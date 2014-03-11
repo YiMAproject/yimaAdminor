@@ -5,6 +5,7 @@ use yimaAdminor\Mvc\AdminRouteListener;
 use yimaAdminor\Mvc\AdminTemplateListener;
 use Zend\Authentication;
 
+use Zend\Console\Console;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
@@ -33,7 +34,9 @@ class Module implements
 	protected $isOnAdmin = false;
 
     /**
-     * Listen to the bootstrap event
+     * Listen to the bootstrap MvcEvent
+     *
+     * this will setup and run admin features
      *
      * @param EventInterface $e
      *
@@ -41,10 +44,17 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
+        if (Console::isConsole()) {
+            // Admin Panel is Only Available for HTTP Request
+            return false;
+        }
+
         /** @var $e MvcEvent */
         /** @var $r \Zend\Mvc\Router\Http\TreeRouteStack */
         $r = $e->getRouter();
         if ($r instanceof HttpSimpleRouteStack) {
+            // Add Admin Specific Router From Config into RoutePlugin Manager ----\
+
             /** @var $routePluginManager \Zend\Mvc\Router\RoutePluginManager */
             $routePluginManager = $r->getRoutePluginManager();
             if ($routePluginManager->has('yimaAdminorRouter') ){ //full name for easy search within codes
@@ -164,7 +174,8 @@ class Module implements
                                         // 'option' => 'value',
 
                                         # encrypt and decrypt class name or object() to de/encode queries for Crypto router
-                                        //'cryption' => '\yimaAdminor\Mvc\Router\Http\Crypto\CryptionBase64'
+                                        # 'cryption' => '\yimaAdminor\Mvc\Router\Http\Crypto\CryptionBase64', // by default
+                                        # 'cryption' => '\yimaAdminor\Mvc\Router\Http\Crypto\CryptionDebuging', // Debug Mode(None Encoded)
                                     ),
                                     'may_terminate' => true,
                                 ),
