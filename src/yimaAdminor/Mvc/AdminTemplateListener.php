@@ -41,7 +41,7 @@ class AdminTemplateListener implements ListenerAggregateInterface
     public function injectViewModelLayout(MvcEvent $e)
     {
         $model = $e->getResult();
-        if (!Share::isOnAdmin() && !$model instanceof ViewModel){
+        if (!Share::isOnAdmin() || !$model instanceof ViewModel){
             // - we are not on admin
             // - none of my business
             return false;

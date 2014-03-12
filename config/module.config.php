@@ -100,7 +100,6 @@ return array(
 	),
 	
 	/* It's not neccessery to change options below except of good reason to change. */
-			
 	'authorize' => array(
 		'protected' => array(
 			'admin' => array( // admin is authorization name, can access later by serviceLocator exp. authorize\admin
