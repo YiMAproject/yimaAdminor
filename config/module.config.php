@@ -3,17 +3,14 @@ return array(
     'yima_adminor' => array(
         # invokable class as a service for route plugin manager
         'router' => 'yimaAdminor\Mvc\Router\Http\Crypto',
+        # auto add invokable class into ControllerManager for admin controllers that not exists
+        'auto_set_controllers' => true,
     ),
 
-	'admin' => array(
-		'auto_set_controllers' => true,
-		'template_folder' 	   => realpath(__DIR__.'/../template'),
-		'template_name' 	   => 'amanda',
-	),
-
-    'yima_widgetator' => array(
+    'controllers' => array(
         'invokables' => array(
-            'uitools.navigation' => 'yimaAdminor\Widget\NavigationMenu\Widget',
+            # also this is automaticaly added by AdminRouteListener as invokable
+            'Admin\yimaAdminor\Index' => 'yimaAdminor\Controller\Admin\IndexController'
         ),
     ),
 
@@ -22,8 +19,14 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
-		
-	# this options here want to say Authentication strategy can be replacement
+
+    'yima_widgetator' => array(
+        'invokables' => array(
+            'uitools.navigation' => 'yimaAdminor\Widget\NavigationMenu\Widget',
+        ),
+    ),
+
+    # this options here want to say Authentication strategy can be replacement
 	'service_manager' => array(
 		'invokables' => array(
 			'yimaAdminor\Authentication\Storage' => 'Zend\Authentication\Storage\NonPersistent',
@@ -59,13 +62,13 @@ return array(
 			'Application' => array(
 				'label' 	 => 'Application',
 				'id'	 	 => 'admin_nav_application',
-				'route'		 => self::ADMIN_ROUTE_NAME,
+				'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME,
 				'order' 	 => -10000,
 				'pages' 	 => array(
 					'dashboard'  => array(
 						'label' 	 => 'Dashboard',
 						'icon'		 => 'icon-flatscreen',
-						'route'		 => self::ADMIN_ROUTE_NAME,	
+						'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME,
 						'order' 	 => -10000,
 					),
 					'website'  => array(
@@ -113,19 +116,10 @@ return array(
 						'controller' => 'Account',
 						'action'	 =>	'logout',
 						# this way you can use navigation outside the admin route, exp. on frontend
-						'route'		 => self::ADMIN_ROUTE_NAME.'/default',
+						'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default',
 					),
 				),
 			),
-		),
-	),
-	
-	# zamaani ke dar admin hastim template haa az
-	# exp. template/*admin/*yimaadminor/index/dashboard.phtml khaande mishavad
-	'controllers' => array(
-		'invokables' => array(
-			# also this is automaticaly added by AdminRouteListener as invokable 
-			//'admin:yimaadminor\index' => 'yimaAdminor\Controller\Admin\IndexController'
 		),
 	),
 );

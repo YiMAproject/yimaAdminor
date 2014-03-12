@@ -1,15 +1,23 @@
 <?php
 namespace yimaAdminor\Mvc;
 
+use yimaAdminor\Service\Parental;
+use yimaAdminor\Service\Share;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router;
 use Zend\Mvc\ModuleRouteListener;
 
-class AdminRouteListener implements ListenerAggregateInterface
+/**
+ * Class AdminRouteListener
+ *
+ * @package yimaAdminor\Mvc
+ */
+class AdminRouteListener extends Parental
+    implements ListenerAggregateInterface
 {
-    const MODULE_NAMESPACE    = 'module';
+    const MODULE_NAMESPACE = 'module';
     
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
@@ -24,33 +32,41 @@ class AdminRouteListener implements ListenerAggregateInterface
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-    	$this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkIsOnAdmin'), -10);
+    	$this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkIsOnAdmin'), -10000);
         $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'makeDefaultRouteController'), -100000);
     }
-    
+
+    /**
+     * Check is Matched Route from Admin and Set
+     * - Service\Share flag
+     *
+     * @param MvcEvent $e
+     * @return bool
+     * @throws \Exception
+     */
     public function checkIsOnAdmin(MvcEvent $e)
     {
-    	$matches = $e->getRouteMatch();
-    	if (!$matches instanceof Router\RouteMatch) {
-    		// Can't do anything without a route match
-    		return;
+        /** @var $matches \Zend\Mvc\Router\Http\RouteMatch */
+        $matches = $e->getRouteMatch();
+    	if (!$matches instanceof Router\RouteMatch){
+            throw new \Exception('No Route Matched Found, Make sure for the event priority!');
     	}
     	
-    	$matchedRoute = $matches->getMatchedRouteName();
-    	if (strstr($matchedRoute,'/')) {
-    		$matchedRoute = substr($matchedRoute,0,strpos($matchedRoute,'/'));
+    	$matchedRouteName = $matches->getMatchedRouteName();
+        if (($slashOcurr = strpos($matchedRouteName, '/')) !== false) {
+            // we are on one of child roots of admin
+            $matchedRouteName = substr($matchedRouteName, 0, $slashOcurr);
+        }
+
+    	if ($matchedRouteName !== \yimaAdminor\Module::ADMIN_ROUTE_NAME) {
+            // we are not in admin route
+    		return false;
     	}
-    	
-    	// we are not in admin route
-    	if ($matchedRoute !== \yimaAdminor\Module::ADMIN_ROUTE_NAME) {
-    		return;
-    	}
-    	
-    	/*
-    	 * Set yimaAdminor\Module::isOnAdmin to true
-    	*/
-    	$serviceLocator = $e->getApplication()->getServiceManager();
-    	$serviceLocator->get('yimaAdminorModule')->setOnAdmin();
+
+        // set Share Services flag
+        self::$isOnAdmin = true;
+
+        return true;
     }
 
     /**
@@ -65,54 +81,44 @@ class AdminRouteListener implements ListenerAggregateInterface
      */
     public function makeDefaultRouteController(MvcEvent $e)
     {
-    	$serviceLocator = $e->getApplication()->getServiceManager();
-    	if (! $serviceLocator->get('yimaAdminorModule')->isOnAdmin() ) {
-    		return;
+    	if (!Share::isOnAdmin()) {
+    		return false;
     	}
-    	
+
     	$matches = $e->getRouteMatch();
-        $matchedRoute = $matches->getMatchedRouteName();
-        if (strstr($matchedRoute,'/') && $matchedRoute != \yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default'){
-        	// we don't do anything on none default route scheme
-        	return;
-        }
-        
+
         // get module\controller from route
-        $module 	= $matches->getParam('module',$matches->getParam(ModuleRouteListener::MODULE_NAMESPACE));
-        $orginController = $matches->getParam('controller');
-        
+        $module 	= $matches->getParam('module');
+        $controller = $matches->getParam('controller');
+
         // Keep the originally matched controller name around
         // masalan dar MvcPage::isActive() estefaade darad, in hamaan controller i ast ke dar route ta'rif shode
-        $matches->setParam(ModuleRouteListener::ORIGINAL_CONTROLLER, $orginController);
-        
-        $controller 	= \yimaAdminor\Module::ADMIN_ROUTE_SEGMENT . ':' . $module . '\\' . $orginController;
-        $controller 	= strtolower($controller);
-        
-        /* get serviceLocator and retrieve ControllerLoader if $controller registered return it
-         * if not return absolute controller namespace path
+        $matches->setParam(ModuleRouteListener::ORIGINAL_CONTROLLER, $controller);
+
+        $controllerService = ucfirst(strtolower(\yimaAdminor\Module::ADMIN_ROUTE_NAME)).'\\'.$module.'\\'.$controller;
+//        $controller = strtolower($controller);
+
+        /* get serviceLocator and retrieve $controller from ControllerLoader if registered
+         * elsewhere return absolute controller namespace path
          */
         $application = $e->getApplication();
         $config      = $application->getServiceManager()->get('Config');
-        
-        if (isset($config['admin']) && is_array($config['admin'])) {
-        	if (isset($config['admin']['auto_set_controllers']) && $config['admin']['auto_set_controllers'] ) 
+
+        if (isset($config['yima_adminor']) && is_array($config['yima_adminor'])) {
+        	if (isset($config['yima_adminor']['auto_set_controllers'])
+                && $config['yima_adminor']['auto_set_controllers'] )
         	{
         		$controllerLoader = $application->getServiceManager()->get('ControllerLoader');
-        		
-        		if (false === $controllerLoader->has($controller)) {
-        			// Prepend the controllername with the module, and replace it in the
-        			// matches
-        			$controllerPath	= $module .'\\'. 'Controller' .'\\'. 'Admin' .'\\'. $orginController.'Controller';
-        			
-        			// register controller if not exists
-        			if (class_exists($controllerPath,true)) {
-        				$controllerLoader->setInvokableClass($controller,$controllerPath);
-        			}
+
+        		if (!$controllerLoader->has($controllerService)) {
+                    // register controller if not exists *********************************\
+        			$controllerPath	= $module .'\\'. 'Controller' .'\\'. 'Admin' .'\\'. $controller.'Controller';
+        			$controllerLoader->setInvokableClass($controllerService, $controllerPath);
         		}
         	}
         }
-        
-        $matches->setParam('controller', $controller);
+
+        $matches->setParam('controller', $controllerService);
     }
     
     

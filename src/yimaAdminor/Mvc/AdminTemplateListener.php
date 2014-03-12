@@ -1,11 +1,17 @@
 <?php
 namespace yimaAdminor\Mvc;
 
+use yimaAdminor\Service\Share;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ModelInterface as ViewModel;
 
+/**
+ * Class AdminTemplateListener
+ *
+ * @package yimaAdminor\Mvc
+ */
 class AdminTemplateListener implements ListenerAggregateInterface
 {
     /**
@@ -25,30 +31,23 @@ class AdminTemplateListener implements ListenerAggregateInterface
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'injectViewModelLayout'), -95);
     }
 
+    /**
+     * Set admin prefix to viewModel Layouts
+     *
+     * @param MvcEvent $e
+     *
+     * @return bool
+     */
     public function injectViewModelLayout(MvcEvent $e)
     {
         $model = $e->getResult();
-        if (! $model instanceof ViewModel) {
-            // Can't do anything 
-            return;
+        if (!Share::isOnAdmin() && !$model instanceof ViewModel){
+            // - we are not on admin
+            // - none of my business
+            return false;
         }
-        
-        $serviceLocator = $e->getApplication()->getServiceManager();
-        if (false == $serviceLocator->get('yimaAdminorModule')->isOnAdmin()) {
-        	// we are not on admin
-        	return;
-        }
-        
-        // template prefix from config, this is admin template name
-        $tn = '';
-        $config = $serviceLocator->get('config');
-        if (isset($config['admin']) && is_array($config['admin'])) {
-        	if (isset($config['admin']['template_name']))
-        	{
-        		$tn = $config['admin']['template_name'];
-        	}
-        }
-        
+
+        /** @var $response \Zend\Http\PhpEnvironment\Response */
         $response = $e->getResponse();
         if ($response->getStatusCode() != 400 && $response->getStatusCode() != 500) {
         	// set template prefix
@@ -57,42 +56,6 @@ class AdminTemplateListener implements ListenerAggregateInterface
         	$template = 'admin'.'/'.$template;
         	$model->setTemplate($template);
         }
-               
-        // set root template prefix
-        // TODO: I think this is not necessery.
-        /*
-        $rootModel = $e->getViewModel();
-        $template  = $rootModel->getTemplate();
-        $template  = (! empty($tn)) ? $tn.'/'.$template : $template;// root ViewModel Template  
-        $rootModel->setTemplate($template);
-        */
-        
-        // add template pathstack
-        if (isset($config['admin']) && is_array($config['admin'])) {
-        	if (! isset($config['admin']['template_folder']) || empty($config['admin']['template_folder']))
-        	{
-        		return;
-        	}
-        	
-        	$templatePath = $config['admin']['template_folder'];
-        }
-        
-        $viewResolver   = $serviceLocator->get('ViewTemplatePathStack');
-        
-        /* 
-        * note: $viewResolver->getPaths() yek object Zend\Stdlib\SplStack ast ke
-        * 		 hengaame itterate az aakharin ozv shoroo mikonad, baraaie hamin
-        * 		 dar injaa path e admin ro be aval ezaafe kardam
-        */
-        $paths   = $viewResolver->getPaths()->toArray();
-        $paths   = array_reverse($paths);
-        
-        // aval view e samte template e konooni e admin dar stack gharaar migirad,  
-        // be in shekl dar admin mitavan khorooji e masalan widget haa yaa .. digar raa rewrite kard 
-        $paths[] = $templatePath; 
-        $paths[] = $templatePath.'/'.$tn;
-        
-        $viewResolver->setPaths($paths);
     }
     
     
