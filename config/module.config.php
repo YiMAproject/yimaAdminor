@@ -15,6 +15,11 @@ return array(
     ),
 
     'view_manager' => array(
+        'mvc_strategies' => array(
+            # If we are on admin set admin prefix to viewModel layout on render
+            'yimaAdminor.MvcView.AdminTemplateListener',
+        ),
+
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
@@ -29,6 +34,9 @@ return array(
     # this options here want to say Authentication strategy can be replacement
 	'service_manager' => array(
 		'invokables' => array(
+            # If we are on admin set admin prefix to viewModel layout on render
+            'yimaAdminor.MvcView.AdminTemplateListener' => 'yimaAdminor\Mvc\AdminTemplateListener',
+
 			'yimaAdminor\Authentication\Storage' => 'Zend\Authentication\Storage\NonPersistent',
 		),
 		'factories' => array(

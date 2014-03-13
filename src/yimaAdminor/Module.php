@@ -90,7 +90,8 @@ class Module implements
         // If we are on admin set specific admin controller to router
         $events->attach(new AdminRouteListener());
         // If we are on admin set admin prefix to viewModel layout on render
-        $events->attach(new AdminTemplateListener());
+        // this moved to merged config [view_manager][mvc_strategies]
+        // $events->attach(new AdminTemplateListener());
     }
 
     /**
