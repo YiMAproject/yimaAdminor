@@ -25,12 +25,6 @@ return array(
         ),
     ),
 
-    'yima_widgetator' => array(
-        'invokables' => array(
-            'uitools.navigation' => 'yimaAdminor\Widget\NavigationMenu\Widget',
-        ),
-    ),
-
     # this options here want to say Authentication strategy can be replacement
 	'service_manager' => array(
 		'invokables' => array(
@@ -65,7 +59,6 @@ return array(
 	),
 	
 	'navigation' => array(
-		#admin navigation
 		'admin' => array(
 			'Application' => array(
 				'label' 	 => 'Application',
@@ -74,19 +67,25 @@ return array(
 				'order' 	 => -10000,
 				'pages' 	 => array(
 					'dashboard'  => array(
-						'label' 	 => 'Dashboard',
+						'label' 	 => 'Adminor Dashboard',
 						'icon'		 => 'icon-flatscreen',
 						'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME,
 						'order' 	 => -10000,
 					),
 					'website'  => array(
-						'label' 	 => 'Web Site View',
+						'label' 	 => 'Application Admin',
 						'module'	 => 'Application',
 						#'controller' => 'Index', // as default
 						#'action'	 =>	'dashboard', // as default
 						'params'	 => array('this' => 'that'),
-						'icon'		 => 'icon-flatscreen',	
+						'icon'		 => 'icon-flatscreen',
 					),
+                    'Home'  => array(
+                        'label' 	 => 'Web Site Home',
+                        'module'	 => 'Application',
+						'route'		 => 'home',
+                        'icon'		 => 'icon-flatscreen',
+                    ),
 					'rayaOnline' => array(
 						'label'  => 'Raya Online',
 						'id' 	 => 'raya-online',

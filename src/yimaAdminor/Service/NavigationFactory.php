@@ -1,5 +1,5 @@
 <?php
-namespace yimaAdminor\Navigation\Service;
+namespace yimaAdminor\Service;
 
 use yimaAdminor;
 use Zend\Navigation\Service\DefaultNavigationFactory;
@@ -9,6 +9,11 @@ use Zend\Mvc\Router\RouteStackInterface as Router;
 use Zend\Navigation\Exception;
 use Zend\Mvc\ModuleRouteListener;
 
+/**
+ * Class NavigationFactory
+ *
+ * @package yimaAdminor\Service
+ */
 class NavigationFactory extends DefaultNavigationFactory
 {
     protected function getName()
@@ -20,6 +25,7 @@ class NavigationFactory extends DefaultNavigationFactory
      * @param array $pages
      * @param RouteMatch $routeMatch
      * @param Router $router
+     *
      * @return mixed
      */
     protected function injectComponents(array $pages, RouteMatch $routeMatch = null, Router $router = null)

@@ -29,7 +29,7 @@ class Module implements
     LocatorRegisteredInterface
 {
 	const ADMIN_ROUTE_NAME	  = 'admin';
-	const ADMIN_ROUTE_SEGMENT = 'admin';
+	const ADMIN_ROUTE_SEGMENT = 'admin'; // /[admin]
 	
     /**
      * Listen to the bootstrap MvcEvent
@@ -104,7 +104,7 @@ class Module implements
     {
     	return array(
     		'factories' => array (
-    			'yimaAdminor.navigation' => 'yimaAdminor\Navigation\Service\NavigationFactory',
+    			'yimaAdminor.navigation' => 'yimaAdminor\Service\NavigationFactory',
     			'yimaAdminor\Authentication\Service' => function ($sm) {
     				return new Authentication\AuthenticationService(
     					$sm->get('yimaAdminor\Authentication\Storage'),
