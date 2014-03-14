@@ -2,7 +2,6 @@
 namespace yimaAdminor;
 
 use yimaAdminor\Mvc\AdminRouteListener;
-use yimaAdminor\Mvc\AdminTemplateListener;
 use Zend\Authentication;
 
 use Zend\Console\Console;
@@ -103,14 +102,13 @@ class Module implements
     public function getServiceConfig()
     {
     	return array(
+            'invokables' => array(
+                # If we are on admin set admin prefix to viewModel layout on render
+                'yimaAdminor.MvcView.AdminTemplateListener' => 'yimaAdminor\Mvc\AdminTemplateListener',
+            ),
     		'factories' => array (
+                # Admin Navigation Menu
     			'yimaAdminor.navigation' => 'yimaAdminor\Service\NavigationFactory',
-    			'yimaAdminor\Authentication\Service' => function ($sm) {
-    				return new Authentication\AuthenticationService(
-    					$sm->get('yimaAdminor\Authentication\Storage'),
-    					$sm->get('yimaAdminor\Authentication\Adapter')
-    				);
-    			},
     		),
     	);
     }

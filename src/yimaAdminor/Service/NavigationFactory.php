@@ -42,7 +42,7 @@ class NavigationFactory extends DefaultNavigationFactory
     			// we need 'module' inside 'params' parameter key to use inside router, navigation ..
     			$routeName = $page['route'];
     			if (strstr($routeName,'/')) {
-    				$routeName = substr($routeName,0,strpos($routeName,'/'));
+    				$routeName = substr($routeName, 0, strpos($routeName,'/'));
     			}
     			
     			if ($routeName == yimaAdminor\Module::ADMIN_ROUTE_NAME
@@ -61,7 +61,7 @@ class NavigationFactory extends DefaultNavigationFactory
     				}
     				
     				$module = $page[$moduleKey];
-    				$page['params'] = array_merge($page['params'],array('module'=>$module));
+    				$page['params'] = array_merge($page['params'], array('module' => $module));
     			}
     			// }
     			
