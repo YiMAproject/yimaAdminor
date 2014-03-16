@@ -7,6 +7,20 @@ return array(
         'auto_set_controllers' => true,
     ),
 
+    # yima authorize module config
+    'yima_authorize' => array(
+        'permissions' => array(
+            'yima_adminor' => 'yimaAdminor.Permission.Acl'
+        ),
+    ),
+
+    'service_manager' => array(
+        'factories' => array(
+            'yimaAdminor.Permission.Acl' => 'yimaAdminor\Auth\Permission\PermissionAclFactory'
+        ),
+    ),
+
+
     'controllers' => array(
         'invokables' => array(
             # also this is automaticaly added by AdminRouteListener as invokable
