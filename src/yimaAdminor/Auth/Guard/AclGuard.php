@@ -61,19 +61,9 @@ class AclGuard implements GuardInterface
             return;
         }
 
-        // extract r:[module] p:[controler.action] from route
-        // ...
-
-        /** @var $event \Zend\Mvc\MvcEvent */
-        $matchRoute = $event->getRouteMatch();
-
-        $role      = null;
-        $module    = null;
-        $privilege = null;
-
         $service = $this->getPermission();
-        if (!$service->isAllowed($role, $module, $privilege)) {
-            // --- Deny Access To Admin ---
+        if (!$service->getIdentity()) {
+            // --- User Must Sign in ---
 
             // Redirect to admin login page -- {
             /** @var $response \Zend\Http\PhpEnvironment\Response */
@@ -92,6 +82,20 @@ class AclGuard implements GuardInterface
             $app->getEventManager()->trigger(MvcEvent::EVENT_RENDER, $event);
             // -- }
         }
+
+        // Check For Privileges
+
+        // extract r:[module] p:[controler.action] from route
+        // ...
+
+        /** @var $event \Zend\Mvc\MvcEvent */
+        /*$matchRoute = $event->getRouteMatch();
+
+        $role      = null;
+        $module    = null;
+        $privilege = null;*/
+
+        /*!$service->isAllowed($role, $module, $privilege)*/
     }
 
     /**

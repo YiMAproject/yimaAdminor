@@ -2,7 +2,7 @@
 return array(
     'router' => array(
         'routes' => array(
-            # Authentication 
+            # Authentication
             'yima_adminor_auth' => array(
                 'type'    => 'Literal',
                 'options' => array(

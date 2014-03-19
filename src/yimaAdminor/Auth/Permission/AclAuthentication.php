@@ -98,7 +98,7 @@ class AclAuthentication implements PermissionInterface
     /**
      * @param \Zend\Permissions\Acl\Acl $acl
      */
-    public function setAcl($acl)
+    public function setAcl(Acl $acl)
     {
         // user must have logged in to access for all system resources
         $assertion = new UserLoginAssertion($this->getAuthService());
@@ -122,7 +122,7 @@ class AclAuthentication implements PermissionInterface
      *
      * @param \Zend\Authentication\AuthenticationService $authService
      */
-    public function setAuthService($authService)
+    public function setAuthService(AuthenticationService $authService)
     {
         $this->authService = $authService;
     }
