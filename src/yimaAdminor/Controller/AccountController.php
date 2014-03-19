@@ -1,5 +1,5 @@
 <?php
-namespace yimaAdminor\Controller\Admin;
+namespace yimaAdminor\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -10,6 +10,11 @@ use Zend\Session\Container;
 
 class AccountController extends AbstractActionController
 {
+    public function login()
+    {
+
+    }
+
     public function logoutAction()
     {
     	$sl = $this->getServiceLocator();
@@ -17,7 +22,7 @@ class AccountController extends AbstractActionController
     	$authService = $sl->get('yimaAdminor\Authentication\Service');
     	$authAdapter = $authService->getAdapter();
     	if (! $authAdapter instanceof HttpAuthenticate) {
-    		throw new Exception(__CLASS__.'::'.__FUNCTION__.' only work for Http Authentication Service Adapter.');
+    		throw new \Exception(__CLASS__.'::'.__FUNCTION__.' only work for Http Authentication Service Adapter.');
     	}
     	
     	$request = $authAdapter->getRequest();
@@ -26,6 +31,7 @@ class AccountController extends AbstractActionController
     	if (! ($headers->has('Authorization') xor $headers->has('Proxy-Authorization')) ) {
     		// we are not authorized yet 
     		$this->redirect()->toRoute(\yimaAdminor\Module::ADMIN_ROUTE_NAME);
+
     		return;
     	}
     	
@@ -75,5 +81,4 @@ class AccountController extends AbstractActionController
     {
     	
     }
-    
 }

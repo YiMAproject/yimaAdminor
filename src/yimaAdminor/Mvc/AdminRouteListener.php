@@ -32,7 +32,9 @@ class AdminRouteListener extends Parental
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-    	$this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkIsOnAdmin'), -10000);
+        // is onAdmin must first after routeMatch detection
+    	$this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkIsOnAdmin'), -1);
+
         $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'makeDefaultRouteController'), -100000);
     }
 

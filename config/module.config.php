@@ -10,13 +10,13 @@ return array(
     # yima authorize module config
     'yima_authorize' => array(
         'permissions' => array(
-            'yima_adminor' => 'yimaAdminor.Permission.Acl'
+            'yima_adminor' => 'yimaAdminor.Permission.Acl' // -V
         ),
     ),
 
     'service_manager' => array(
         'factories' => array(
-            'yimaAdminor.Permission.Acl' => 'yimaAdminor\Auth\Permission\PermissionAclFactory'
+            'yimaAdminor.Permission.Acl' => 'yimaAdminor\Auth\Permission\AclAuthenticationFactory'
         ),
     ),
 
@@ -24,7 +24,9 @@ return array(
     'controllers' => array(
         'invokables' => array(
             # also this is automaticaly added by AdminRouteListener as invokable
-            'Admin\yimaAdminor\Index' => 'yimaAdminor\Controller\Admin\IndexController'
+            'Admin\yimaAdminor\Index' => 'yimaAdminor\Controller\Admin\IndexController',
+
+            'yimaAdminor\Controller\Account' => 'yimaAdminor\Controller\AccountController'
         ),
     ),
 
