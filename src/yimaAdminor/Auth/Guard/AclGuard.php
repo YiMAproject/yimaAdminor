@@ -64,6 +64,7 @@ class AclGuard implements GuardInterface
         // extract r:[module] p:[controler.action] from route
         // ...
 
+        /** @var $event \Zend\Mvc\MvcEvent */
         $matchRoute = $event->getRouteMatch();
 
         $role      = null;
@@ -72,23 +73,24 @@ class AclGuard implements GuardInterface
 
         $service = $this->getPermission();
         if (!$service->isAllowed($role, $module, $privilege)) {
-            // Deny Access To Admin
+            // --- Deny Access To Admin ---
 
-            // Redirect to admin login page
-            $matchRoute->setParam('module', 'yimaAdminor');
-            $matchRoute->setParam('controller', 'Account');
-            $matchRoute->setParam('action', 'login');
+            // Redirect to admin login page -- {
+            /** @var $response \Zend\Http\PhpEnvironment\Response */
+            $response = $event->getResponse();
 
-            $event->setError('You have not authorized to access');
-            $event->setParam('route', $matchRoute);
-            $event->setParam('identity', $service->getIdentity());
-            $event->setParam('exception', new \Exception('You are not authorized to access ' . $matchRoute->getMatchedRouteName()));
-
+            /** @var $router \Zend\Mvc\Router\Http\TreeRouteStack */
+            $router = $event->getRouter();
+            $url    = $router->assemble(array(), array('name' => 'yima_adminor_auth'));
+            $response->getHeaders()->addHeaderLine('Location', $url);
+            $response->setStatusCode(302);
+            $event->setResult($response);
 
             /* @var $app \Zend\Mvc\Application */
+            $event->stopPropagation(true);
             $app = $event->getTarget();
-
-            $app->getEventManager()->trigger(MvcEvent::EVENT_DISPATCH_ERROR, $event);
+            $app->getEventManager()->trigger(MvcEvent::EVENT_RENDER, $event);
+            // -- }
         }
     }
 

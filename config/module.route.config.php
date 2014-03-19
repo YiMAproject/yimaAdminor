@@ -2,6 +2,31 @@
 return array(
     'router' => array(
         'routes' => array(
+            # Authentication 
+            'yima_adminor_auth' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/adminor',
+                    'defaults' => array(
+                        'controller'   => 'yimaAdminor\Controller\Account',
+                        'action'       => 'login',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'logout' => array(
+                        'type'    => 'Literal',
+                        'options' => array(
+                            'route' => '/logout',
+                            'defaults' 	 => array(
+                                'action'     => 'logout',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                    ),
+                ),
+            ),
+            # Admin Area Routes
             \yimaAdminor\Module::ADMIN_ROUTE_NAME => array(
                 'type'    => 'Literal',
                 'options' => array(

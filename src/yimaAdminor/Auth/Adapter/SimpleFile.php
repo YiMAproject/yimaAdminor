@@ -2,6 +2,7 @@
 namespace yimaAdminor\Auth\Adapter;
 
 use Zend\Authentication\Adapter\AbstractAdapter;
+use Zend\Authentication\Result;
 
 /**
  * Class SimpleFile
@@ -18,6 +19,15 @@ class SimpleFile extends AbstractAdapter
      */
     public function authenticate()
     {
-        return false;
+        $iden = $this->getIdentity();
+        $cred = $this->getCredential();
+
+        if ($iden == 'naderi.payam@gmail.com' && $cred == '123456') {
+            $code = Result::SUCCESS;
+        } else {
+            $code = Result::FAILURE;
+        }
+
+        return new Result($code, $iden);
     }
 }
