@@ -28,8 +28,7 @@ class AccountController extends AbstractActionController
         $email = $this->params()->fromPost('email');
         $pass  = $this->params()->fromPost('password');
 
-        /** @var $ps PermissionsRegistry */
-        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsRegistry');
+        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsManager');
         $ps = $ps->get('yima_adminor'); // $ps::get('yima_adminor');
         /** @var $ps \yimaAdminor\Auth\Permission\AclAuthentication */
 
@@ -54,8 +53,7 @@ class AccountController extends AbstractActionController
      */
     public function logoutAction()
     {
-        /** @var $ps PermissionsRegistry */
-        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsRegistry');
+        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsManager');
         $ps = $ps->get('yima_adminor'); // $ps::get('yima_adminor');
         /** @var $ps \yimaAdminor\Auth\Permission\AclAuthentication */
 

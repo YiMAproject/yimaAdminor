@@ -10,13 +10,9 @@ return array(
     # yima authorize module config
     'yima_authorize' => array(
         'permissions' => array(
-            'yima_adminor' => 'yimaAdminor.Permission.Acl' // -V
-        ),
-    ),
-
-    'service_manager' => array(
-        'factories' => array(
-            'yimaAdminor.Permission.Acl' => 'yimaAdminor\Auth\Permission\AclAuthenticationFactory'
+            'factories' => array(
+                'yima_adminor' => 'yimaAdminor\Auth\Permission\AclAuthenticationFactory'
+            ),
         ),
     ),
 
