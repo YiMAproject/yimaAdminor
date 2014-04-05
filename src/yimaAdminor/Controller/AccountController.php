@@ -4,9 +4,7 @@ namespace yimaAdminor\Controller;
 use yimaAuthorize\Service\PermissionsRegistry;
 use Zend\Mvc\Controller\AbstractActionController;
 
-use Zend\Http\Header\Authorization as AuthorizationHeader;
 use Zend\Authentication\Adapter\Http as HttpAuthenticate;
-use Zend\Session\SessionManager;
 use Zend\Session\Container;
 
 /**
@@ -30,8 +28,10 @@ class AccountController extends AbstractActionController
         $email = $this->params()->fromPost('email');
         $pass  = $this->params()->fromPost('password');
 
-        // TODO: using service locator for modules outside of yimaAuthorize
-        $ps = PermissionsRegistry::get('yima_adminor');
+        /** @var $ps PermissionsRegistry */
+        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsRegistry');
+        $ps = $ps->get('yima_adminor'); // $ps::get('yima_adminor');
+        /** @var $ps \yimaAdminor\Auth\Permission\AclAuthentication */
 
         /** @var $authService \Zend\Authentication\AuthenticationService */
         $authService = $ps->getAuthService();
@@ -54,8 +54,10 @@ class AccountController extends AbstractActionController
      */
     public function logoutAction()
     {
-        // TODO: using service locator for modules outside of yimaAuthorize
-        $ps = PermissionsRegistry::get('yima_adminor');
+        /** @var $ps PermissionsRegistry */
+        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsRegistry');
+        $ps = $ps->get('yima_adminor'); // $ps::get('yima_adminor');
+        /** @var $ps \yimaAdminor\Auth\Permission\AclAuthentication */
 
         $ps->getAuthService()->clearIdentity();
 
