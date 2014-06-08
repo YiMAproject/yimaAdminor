@@ -9,8 +9,10 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "rayamedia/yima-authorize": "dev-master",
         "rayamedia/yima-plugin-installer": "dev-master"
+    },
+    "require-dev" : {
+        "rayamedia/yima-authorize": "dev-master"
     },
     "extra": {
         "yima-plugin-name": "yimaAdminor"
