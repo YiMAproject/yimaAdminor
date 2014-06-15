@@ -43,7 +43,6 @@ class AdminTemplateListener implements ListenerAggregateInterface
         $model = $e->getResult();
         if (!Share::isOnAdmin() || !$model instanceof ViewModel){
             // - we are not on admin
-            // - none of my business
             return false;
         }
 

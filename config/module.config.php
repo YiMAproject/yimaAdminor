@@ -1,11 +1,31 @@
 <?php
 return array(
     'yima_adminor' => array(
+        # default adminor template
+        'default_theme' => 'defbootstrap', /* @TODO: easily change by optional module setting */
         # invokable class as a service for route plugin manager
         'router' => 'yimaAdminor\Mvc\Router\Http\Crypto',
         # auto add invokable class into ControllerManager for admin controllers that not exists
         'auto_set_controllers' => true,
     ),
+
+    // using specific theme for admin panel ... {
+    'yima-theme' => array(
+        'theme_locator' => array(
+            'resolver_adapter_service' => array(
+                # change template for admin panel
+                'yimaAdminor\Mvc\AdminThemeResolver' => 10000, // high priority for admin
+            ),
+        ),
+
+        'themes' => array(
+            # default adminor template
+            'defbootstrap' => array(
+                'dir_path' => __DIR__ .DS. '..' .DS. 'themes',
+            ),
+        ),
+    ),
+    # ... }
 
     # yima authorize module config
     'yima_authorize' => array(
@@ -15,7 +35,6 @@ return array(
             ),
         ),
     ),
-
 
     'controllers' => array(
         'invokables' => array(

@@ -43,6 +43,8 @@ class Module implements
     {
         // we need this module up and runing
         $manager->loadModule('yimaAuthorize');
+        // also we need yimaTheme but this not working on ZF2 v2.4
+        // $manager->loadModule('yimaTheme');
     }
 
     /**
