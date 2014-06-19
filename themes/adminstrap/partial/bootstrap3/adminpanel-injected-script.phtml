@@ -1,0 +1,17 @@
+<nav class="adminor">
+    <?php
+    echo $this->navigation('yimaAdminor.Navigation')
+        ->menu()
+        ->setUlClass('list-unstyled adminor-menu')
+        ->setPartial('partial/bootstrap3/adminpanel-navigation-offcanvas.phtml')
+    ;
+    ?>
+</nav>
+<div class="adminor-expand navbar-fixed-top">
+    <a class="navbar-brand" href="#"></a>
+    <div class="navbar-header pull-right">
+        <a id="nav-expander" class="nav-expander fixed">
+            Administ &nbsp;<i class="fa fa-bars fa-lg white"></i>
+        </a>
+    </div>
+</div>

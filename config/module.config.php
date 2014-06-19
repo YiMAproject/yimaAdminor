@@ -2,7 +2,7 @@
 return array(
     'yima_adminor' => array(
         # default adminor template
-        'default_theme' => 'defbootstrap', /* @TODO: easily change by optional module setting */
+        'default_theme' => 'adminstrap', /* @TODO: easily change by optional module setting */
         # invokable class as a service for route plugin manager
         'router' => 'yimaAdminor\Mvc\Router\Http\Crypto',
         # auto add invokable class into ControllerManager for admin controllers that not exists
@@ -20,7 +20,7 @@ return array(
 
         'themes' => array(
             # default adminor template
-            'defbootstrap' => array(
+            'adminstrap' => array(
                 'dir_path' => __DIR__ .DS. '..' .DS. 'themes',
             ),
         ),
