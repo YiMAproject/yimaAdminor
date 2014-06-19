@@ -1,4 +1,5 @@
 <?php
+use yimaAdminor\Service\Share;
 use Zend\Stdlib\ArrayUtils;
 
 /**
@@ -46,6 +47,11 @@ $events->attach(
     'Zend\Mvc\Application',
     \Zend\Mvc\MvcEvent::EVENT_RENDER,
     function($e) use ($viewRenderer, $sm) {
+        if (!share::isOnAdmin()) {
+            // user logged out
+            return;
+        }
+
         /** @var $e \Zend\Mvc\MvcEvent */
         $response    = $e->getResponse();
         $content     = $response->getContent();
