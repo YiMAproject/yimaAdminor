@@ -47,9 +47,12 @@ $events->attach(
     'Zend\Mvc\Application',
     \Zend\Mvc\MvcEvent::EVENT_RENDER,
     function($e) use ($viewRenderer, $sm) {
-        if (!share::isOnAdmin()) {
-            // user logged out
-            return;
+        $permissionsManager = $sm->get('yimaAuthorize.PermissionsManager');
+        /** @var $permission \yimaAuthorize\Permission\PermissionInterface */
+        $permission = $permissionsManager->get('yima_adminor');
+        if (!$permission->getIdentity()) {
+            // user not authorized to adminor
+            return 0;
         }
 
         /** @var $e \Zend\Mvc\MvcEvent */
