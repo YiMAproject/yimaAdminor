@@ -30,7 +30,7 @@ class Module implements
     AutoloaderProviderInterface,
     LocatorRegisteredInterface
 {
-	const ADMIN_ROUTE_NAME	  = 'admin';
+	const ADMIN_ROUTE_NAME	  = 'adminorRouter';
 	const ADMIN_ROUTE_SEGMENT = 'admin'; // /[admin]
 
     /**

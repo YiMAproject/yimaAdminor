@@ -31,8 +31,13 @@ class NavigationFactory extends DefaultNavigationFactory
     protected function injectComponents(array $pages, RouteMatch $routeMatch = null, Router $router = null)
     {
     	foreach ($pages as &$page) {
-    		$hasMvc = isset($page['action']) || isset($page['controller']) || isset($page['module']) || isset($page['route']);
-    		if ($hasMvc) {
+    		$isMVC = (
+                isset($page['action'])
+                || isset($page['controller'])
+                || isset($page['module'])
+                || isset($page['route'])
+            );
+    		if ($isMVC) {
     			// add default admin route name to navigation
     			if (!isset($page['route'])) {
     				$page['route'] = yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default';
