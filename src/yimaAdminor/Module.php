@@ -75,7 +75,7 @@ class Module implements
             if ($routePluginManager->has('yimaAdminorRouter') ){ //full name for easy search within codes
                 throw new \Exception(
                     sprintf(
-                        'Router "yimaAdminor" is not registered on RouterPlugin(%s).',
+                        'Router "yimaAdminorRouter" is registered on RouterPlugin(%s).',
                         get_class($routePluginManager)
                     )
                 );
@@ -140,12 +140,7 @@ class Module implements
     {
         $confDir = realpath(__DIR__ . '/../../config');
 
-        $config = include_once $confDir.'/module.config.php';
-
-        return ArrayUtils::merge(
-            include_once $confDir.'/module.route.config.php',
-            $config
-        );
+        return include_once $confDir.'/module.config.php';
     }
 
     /**
