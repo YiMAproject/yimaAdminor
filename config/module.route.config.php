@@ -40,7 +40,7 @@ return array(
             'may_terminate' => true,
             'child_routes' => array(
                 'default' => array(
-                    'type'    => 'yimaAdminorRouter',
+                    'type'    => 'yimaAdminor\Mvc\Router\Http\Crypto', // use class exists
                     'options' => array(
                         # we can use any word after /admin[/word]/ to browse child routes
                         'route' => '/', //'/browse/',

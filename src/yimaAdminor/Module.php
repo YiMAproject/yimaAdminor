@@ -65,41 +65,6 @@ class Module implements
         }
 
         /** @var $e MvcEvent */
-        /** @var $r \Zend\Mvc\Router\Http\TreeRouteStack */
-        $r = $e->getRouter();
-        if ($r instanceof HttpSimpleRouteStack) {
-            // Add Admin Specific Router From Config into RoutePlugin Manager **********************\
-
-            /** @var $routePluginManager \Zend\Mvc\Router\RoutePluginManager */
-            $routePluginManager = $r->getRoutePluginManager();
-            if ($routePluginManager->has('yimaAdminorRouter') ){ //full name for easy search within codes
-                throw new \Exception(
-                    sprintf(
-                        'Router "yimaAdminorRouter" is registered on RouterPlugin(%s).',
-                        get_class($routePluginManager)
-                    )
-                );
-            }
-
-            // Set RouteInterface from config {
-            $router = null;
-            $sm     = $e->getApplication()->getServiceManager();
-            $config = $sm->get('config');
-            if (isset($config['yima_adminor']) && is_array($config['yima_adminor'])
-                && isset($config['yima_adminor']['router'])
-            ) {
-                $router = $config['yima_adminor']['router'];
-            }
-
-            // plugin manager will validate router (isValid)
-            $routePluginManager->setInvokableClass(
-                'yimaAdminorRouter',
-                $router
-            );
-            // ... }
-        } // end of if HttpRouteStack
-
-
         // Attach default Events to event manager         **********************\
         $events	= $e->getApplication()->getEventManager();
 
