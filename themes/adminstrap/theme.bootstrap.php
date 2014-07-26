@@ -22,7 +22,7 @@ $mergedConf = $sm->get('Config');
 $config     = ArrayUtils::merge($mergedConf, $themeConf);
 
 $sm->setAllowOverride(true);
-$sm->setService('config',$config);
+$sm->setService('config', $config);
 $sm->setAllowOverride(false);
 # ... }
 

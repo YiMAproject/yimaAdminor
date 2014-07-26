@@ -31,6 +31,7 @@ class Module implements
     LocatorRegisteredInterface
 {
 	const ADMIN_ROUTE_NAME	  = 'adminorRouter';
+	const ADMIN_DEFAULT_ROUTE_NAME  = 'adminorRouter/default';
 	const ADMIN_ROUTE_SEGMENT = 'admin'; // /[admin]
 
     /**

@@ -56,5 +56,7 @@ return array(
         ),
     ),
 
-	'navigation' => include_once 'module.navigation.config.php'
+	'navigation' => include_once 'module.navigation.config.php',
+
+    'router'     => include_once 'module.route.config.php',
 );
