@@ -9,6 +9,8 @@ $sm = $this->getServiceLocator();
 
 $this->isFinal = false;
 
+$sm = $this->getServiceLocator();
+
 // Set AssetsManager Config ... {
 $themeConf = array(
     'asset_manager' => array(
