@@ -31,6 +31,7 @@ class AdminThemeResolver implements
 
         // - we are on admin
         $sm = $this->themeLocator->getServiceLocator();
+
         // get registered PermissionsManager service and retrieve plugin
         $permissionsManager = $sm->get('yimaAuthorize.PermissionsManager');
         /** @var $permission \yimaAuthorize\Permission\PermissionInterface */

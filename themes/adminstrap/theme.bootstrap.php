@@ -5,7 +5,9 @@ use Zend\Stdlib\ArrayUtils;
 /**
  * @var $this \yimaTheme\Theme\Theme
  */
-$sm = $this->getServiceManager();
+$sm = $this->getServiceLocator();
+
+$this->isFinal = false;
 
 // Set AssetsManager Config ... {
 $themeConf = array(

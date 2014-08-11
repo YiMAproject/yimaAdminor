@@ -43,8 +43,16 @@ class Module implements
     public function init(ModuleManagerInterface $manager)
     {
         // we need this module up and runing
+        /** @var $manager \Zend\ModuleManager\ModuleManager */
         $manager->loadModule('yimaAuthorize');
-        // also we need yimaTheme but this not working on ZF2 v2.4
+
+        $loadedModules = $manager->getLoadedModules();
+        if (!in_array('yimaTheme', array_keys($loadedModules))) {
+            throw new \Exception(
+                'YimaTheme Module Not Loaded Yet!! Adminor need yimaTheme Loaded Before.'.
+                'You can put YimaTheme higher than yimaAdminor in your application config'
+            );
+        }
         // $manager->loadModule('yimaTheme');
     }
 
