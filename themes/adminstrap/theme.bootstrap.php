@@ -11,6 +11,9 @@ $this->isFinal = false;
 
 $sm = $this->getServiceLocator();
 
+if (!$sm->get('ModuleManager')->getModule('yimaJquery'))
+    throw new \Exception('Administrap Theme Need YimaJquery Module Enabled And Loaded.');
+
 // Set AssetsManager Config ... {
 $themeConf = array(
     'asset_manager' => array(
@@ -33,10 +36,14 @@ $sm->setAllowOverride(false);
 // Attach Assets file into base template ... {
 $viewRenderer = $sm->get('viewRenderer');
 
-$viewRenderer->headScript()
+/**
+ * print it in your viewScript layout
+ *
+ * <?php echo $this->jQuery() ?>
+ */
+$viewRenderer->jQuery()
+    ->enable()
     ->appendFile($viewRenderer->basePath().'/adminstrap/js/jquery.navgoco.js')
-;
-$viewRenderer->inlineScript()
     ->appendFile($viewRenderer->basePath().'/adminstrap/js/main.js')
 ;
 

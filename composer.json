@@ -12,6 +12,7 @@
         "rayamedia/yima-plugin-installer": "dev-master"
     },
     "require-dev" : {
+        "rayamedia/yima-jquery": "dev-master",
         "rayamedia/yima-authorize": "dev-master",
         "rayamedia/yima-theme": "dev-master"
     },

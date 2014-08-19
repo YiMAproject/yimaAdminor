@@ -37,16 +37,16 @@ class Module implements
     /**
      * Initialize workflow
      *
-     * @param  ModuleManagerInterface $manager
+     * @param  ModuleManagerInterface $moduleManager
      * @return void
      */
-    public function init(ModuleManagerInterface $manager)
+    public function init(ModuleManagerInterface $moduleManager)
     {
         // we need this module up and runing
-        /** @var $manager \Zend\ModuleManager\ModuleManager */
-        $manager->loadModule('yimaAuthorize');
+        /** @var $moduleManager \Zend\ModuleManager\ModuleManager */
+        $moduleManager->loadModule('yimaAuthorize');
 
-        $loadedModules = $manager->getLoadedModules();
+        $loadedModules = $moduleManager->getLoadedModules();
         if (!in_array('yimaTheme', array_keys($loadedModules))) {
             throw new \Exception(
                 'YimaTheme Module Not Loaded Yet!! Adminor need yimaTheme Loaded Before.'.
