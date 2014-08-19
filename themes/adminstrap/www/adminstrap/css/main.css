@@ -1,3 +1,82 @@
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.navbar-static-top, .navbar-fixed-top, .navbar-fixed-bottom {
+    border-radius: 0;
+}
+
+.navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+}
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+@media (min-width: 768px) {
+    .navbar-fixed-top, .navbar-fixed-bottom {
+        border-radius: 0;
+    }
+}
+
+.navbar-fixed-top, .navbar-fixed-bottom {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+
+.navbar-brand, .navbar-nav>li>a {
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+}
+
+.navbar-brand {
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+a {
+    color: #428bca;
+    text-decoration: none;
+}
+
+.pull-right {
+    float: right!important;
+}
+
+.navbar-header {
+    float: left;
+}
+
+.navbar-header:after {
+    clear: both;
+}
+
+.navbar-header:before, .navbar-header:after {
+    display: table;
+    content: " ";
+}
+
+
+
+
+
 a.nav-expander {
   background: none repeat scroll 0 0 #000000;
   color: #FFFFFF;
@@ -156,16 +235,6 @@ body.nav-expanded {
   margin: 0.1em 0.8em -0.1em 0;
   opacity: 1;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
