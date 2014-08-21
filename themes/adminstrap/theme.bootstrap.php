@@ -1,39 +1,27 @@
 <?php
-use yimaAdminor\Service\Share;
 use Zend\Stdlib\ArrayUtils;
 
 /**
  * @var $this \yimaTheme\Theme\Theme
  */
-$sm = $this->getServiceLocator();
 
+/**
+ * Theme Resolver Run This Bootstrap And
+ * Fall into Next Theme With Resolver Till Get
+ * Into Final Theme
+ *
+ * By Default is True
+ */
 $this->isFinal = false;
+
+// ================================================================================================================================================
 
 $sm = $this->getServiceLocator();
 
 if (!$sm->get('ModuleManager')->getModule('yimaJquery'))
     throw new \Exception('Administrap Theme Need YimaJquery Module Enabled And Loaded.');
 
-// Set AssetsManager Config ... {
-$themeConf = array(
-    'asset_manager' => array(
-        'resolver_configs' => array(
-            'paths' => array(
-                __DIR__.DS.'www',
-            ),
-        ),
-    ),
-);
-
-$mergedConf = $sm->get('Config');
-$config     = ArrayUtils::merge($mergedConf, $themeConf);
-
-$sm->setAllowOverride(true);
-$sm->setService('config', $config);
-$sm->setAllowOverride(false);
-# ... }
-
-// Attach Assets file into base template ... {
+// ---- Attach Assets file into base template -----------------------------------------------------------------------------------------------------\
 $viewRenderer = $sm->get('viewRenderer');
 
 /**
@@ -50,9 +38,8 @@ $viewRenderer->jQuery()
 $viewRenderer->headLink()
     ->appendStylesheet($viewRenderer->basePath().'/adminstrap/css/main.css')
 ;
-# ... }
 
-// Attach Menu HTML tags into body ...{
+// ---- Attach Menu HTML tags into body -----------------------------------------------------------------------------------------------------------\
 $events = $sm->get('sharedEventManager');
 $events->attach(
     'Zend\Mvc\Application',
@@ -70,7 +57,7 @@ $events->attach(
         $response    = $e->getResponse();
         $content     = $response->getContent();
 
-        $adminorMenu = $viewRenderer->render('partial/bootstrap3/adminpanel-injected-script');
+        $adminorMenu = $viewRenderer->render('partial/administrap/injected-script');
         $content = str_replace(
             '<body>',
             '<body>'.$adminorMenu,
@@ -80,4 +67,26 @@ $events->attach(
     },
     -100000
 );
-# ... }
+
+// ---- Register Assets File Into AssetManager Service --------------------------------------------------------------------------------------------\
+/*
+ * These Config must merged to application config at last
+ * : see below
+ */
+$ovverideConfigs = array(
+    'asset_manager' => array(
+        'resolver_configs' => array(
+            'paths' => array(
+                __DIR__.DS.'www',
+            ),
+        ),
+    ),
+);
+
+// ---- Merge new config to application merged config ---------------------------------------------------------------------------------------------\
+$mergedConf = $sm->get('Config');
+$config     = ArrayUtils::merge($mergedConf, $ovverideConfigs);
+
+$sm->setAllowOverride(true);
+$sm->setService('config', $config);
+$sm->setAllowOverride(false);
