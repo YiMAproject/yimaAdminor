@@ -22,6 +22,7 @@ if (!$sm->get('ModuleManager')->getModule('yimaJquery'))
     throw new \Exception('Administrap Theme Need YimaJquery Module Enabled And Loaded.');
 
 // ---- Attach Assets file into base template -----------------------------------------------------------------------------------------------------\
+/** @var $viewRenderer \Zend\View\Renderer\PhpRenderer */
 $viewRenderer = $sm->get('viewRenderer');
 
 /**
