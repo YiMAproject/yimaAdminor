@@ -12,7 +12,7 @@ return array(
         'theme_locator' => array(
             'resolver_adapter_service' => array(
                 # change template for admin panel
-                'yimaAdminor\Mvc\AdminThemeResolver' => 10000, // high priority for admin
+                'yimaAdminor\Mvc\OffCanvasAdminThemeResolver' => 10000, // high priority for admin
             ),
         ),
 
