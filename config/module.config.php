@@ -46,7 +46,7 @@ return array(
     'view_manager' => array(
         'mvc_strategies' => array(
             # If we are on admin set admin prefix to viewModel layout on render (registered AggregateListener Service)
-            'yimaAdminor.MvcView.AdminTemplateListener',
+            'yimaAdminor.MvcView.AdminMvcRenderStrategies',
         ),
 
         'template_path_stack' => array(

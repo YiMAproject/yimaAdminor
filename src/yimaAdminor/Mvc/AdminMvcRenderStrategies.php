@@ -9,10 +9,11 @@ use Zend\View\Model\ModelInterface as ViewModel;
 
 /**
  * Class AdminTemplateListener
+ * - If we are on admin set admin prefix to viewModel layout on render
  *
  * @package yimaAdminor\Mvc
  */
-class AdminTemplateListener implements ListenerAggregateInterface
+class AdminMvcRenderStrategies implements ListenerAggregateInterface
 {
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
@@ -23,7 +24,7 @@ class AdminTemplateListener implements ListenerAggregateInterface
      * Attach to an event manager
      *
      * @param  EventManagerInterface $events
-     * @param  integer $priority
+     * @internal param int $priority
      */
     public function attach(EventManagerInterface $events)
     {

@@ -95,7 +95,7 @@ class Module implements
     	return array(
             'invokables' => array(
                 # If we are on admin set admin prefix to viewModel layout on render
-                'yimaAdminor.MvcView.AdminTemplateListener' => 'yimaAdminor\Mvc\AdminTemplateListener',
+                'yimaAdminor.MvcView.AdminMvcRenderStrategies' => 'yimaAdminor\Mvc\AdminMvcRenderStrategies',
             ),
     		'factories' => array (
                 # Admin Navigation Menu
