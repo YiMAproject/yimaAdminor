@@ -13,6 +13,10 @@ use Zend\Stdlib\ArrayUtils;
  * By Default is True
  */
 $this->isFinal = false;
+//$this->setCaptureTo('body');
+
+// Menu HTML tags
+$this->setTemplate('partial/administrap/injected-script');
 
 // ================================================================================================================================================
 
@@ -39,35 +43,6 @@ $viewRenderer->jQuery()
 $viewRenderer->headLink()
     ->appendStylesheet($viewRenderer->basePath().'/adminstrap/css/main.css')
 ;
-
-// ---- Attach Menu HTML tags into body -----------------------------------------------------------------------------------------------------------\
-$events = $sm->get('sharedEventManager');
-$events->attach(
-    'Zend\Mvc\Application',
-    \Zend\Mvc\MvcEvent::EVENT_RENDER,
-    function($e) use ($viewRenderer, $sm) {
-        $permissionsManager = $sm->get('yimaAuthorize.PermissionsManager');
-        /** @var $permission \yimaAuthorize\Permission\PermissionInterface */
-        $permission = $permissionsManager->get('yima_adminor');
-        if (!$permission->getIdentity()) {
-            // user not authorized to adminor
-            return 0;
-        }
-
-        /** @var $e \Zend\Mvc\MvcEvent */
-        $response    = $e->getResponse();
-        $content     = $response->getContent();
-
-        $adminorMenu = $viewRenderer->render('partial/administrap/injected-script');
-        $content = str_replace(
-            '<body>',
-            '<body>'.$adminorMenu,
-            $content
-        );
-        $response->setContent($content);
-    },
-    -100000
-);
 
 // ---- Register Assets File Into AssetManager Service --------------------------------------------------------------------------------------------\
 /*

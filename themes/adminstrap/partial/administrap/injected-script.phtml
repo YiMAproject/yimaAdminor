@@ -1,3 +1,4 @@
+<?php if ($this->authorize('yima_adminor')->isAllowed()) { ?>
 <nav class="adminor">
     <?php
     echo $this->navigation('yimaAdminor.Navigation')
@@ -15,3 +16,4 @@
         </a>
     </div>
 </div>
+<?php } ?>
