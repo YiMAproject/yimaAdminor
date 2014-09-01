@@ -3,7 +3,6 @@ namespace yimaAdminor\Auth\Permission;
 
 use yimaAdminor\Auth\Adapter\SimpleFile;
 use yimaAuthorize\Permission\PermissionInterface;
-use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager;
 
 /**
@@ -22,7 +21,7 @@ class AclAuthenticationFactory implements ServiceManager\FactoryInterface
      */
     public function createService(ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
-        $authService = new AuthenticationService(
+        $authService = new \Zend\Authentication\AuthenticationService(
             null, // use default session storage
             new SimpleFile()
         );
