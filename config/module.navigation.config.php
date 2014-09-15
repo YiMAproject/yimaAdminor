@@ -4,7 +4,7 @@ return array(
         array(
             'label' 	 => 'Adminor',
             'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME,
-            'order' 	 => 100000,
+            'order' 	 => -100000,
             'pages' 	 => array(
                 array(
                     'label' 	 => 'Dashboard',
