@@ -4,11 +4,6 @@ namespace yimaAdminor\Auth\Adapter;
 use Zend\Authentication\Adapter\AbstractAdapter;
 use Zend\Authentication\Result;
 
-/**
- * Class SimpleFile
- *
- * @package yimaAdminor\Auth\Adapter
- */
 class SimpleFile extends AbstractAdapter
 {
     /**

@@ -3,8 +3,8 @@ namespace yimaAdminor\Auth\Permission;
 
 use yimaAdminor\Auth\Guard\AclGuard;
 use yimaAdminor\Auth\Permission\AclAuthentication\UserLoginAssertion;
-use yimaAuthorize\Guard\GuardInterface;
-use yimaAuthorize\Permission\PermissionInterface;
+use yimaAuthorize\Auth\Guard\GuardInterface;
+use yimaAuthorize\Auth\Permission\PermissionInterface;
 use Zend\Authentication\AuthenticationService;
 use Zend\Permissions\Acl\Acl;
 

@@ -2,8 +2,8 @@
 namespace yimaAdminor\Auth\Guard;
 
 use yimaAdminor\Service\Share;
-use yimaAuthorize\Guard\GuardInterface;
-use yimaAuthorize\Permission\PermissionInterface;
+use yimaAuthorize\Auth\Guard\GuardInterface;
+use yimaAuthorize\Auth\Permission\PermissionInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 
@@ -101,11 +101,15 @@ class AclGuard implements GuardInterface
     /**
      * Set Permission
      *
-     * @param \yimaAuthorize\Permission\PermissionInterface $permission
+     * @param \yimaAuthorize\Auth\Permission\PermissionInterface $permission
+     *
+     * @return $this
      */
     public function setPermission(PermissionInterface $permission)
     {
         $this->permission = $permission;
+
+        return $this;
     }
 
     /**

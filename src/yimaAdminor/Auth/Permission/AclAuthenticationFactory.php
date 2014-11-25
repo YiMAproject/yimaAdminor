@@ -2,7 +2,7 @@
 namespace yimaAdminor\Auth\Permission;
 
 use yimaAdminor\Auth\Adapter\SimpleFile;
-use yimaAuthorize\Permission\PermissionInterface;
+use yimaAuthorize\Auth\Permission\PermissionInterface;
 use Zend\ServiceManager;
 
 /**
