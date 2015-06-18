@@ -102,6 +102,7 @@ class AccountController extends AbstractActionController
             ->identity()->logout();
 
         $this->redirect()->toRoute('yima_adminor_auth');
+        return $this->getResponse();
     }
 
     protected function _translator()
