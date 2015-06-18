@@ -1,51 +1,96 @@
 <?php
 namespace yimaAdminor\Controller;
 
-use yimaAuthorize\Service\PermissionsRegistry;
+use Poirot\AuthSystem\Authenticate\Exceptions\AuthenticationException;
+use Poirot\AuthSystem\Authenticate\Exceptions\WrongCredentialException;
+use yimaAdminor\Auth\AuthService;
 use Zend\Mvc\Controller\AbstractActionController;
 
-use Zend\Authentication\Adapter\Http as HttpAuthenticate;
-use Zend\Session\Container;
-
-/**
- * Class AccountController
- *
- * @package yimaAdminor\Controller
- */
 class AccountController extends AbstractActionController
 {
+    /**
+     * @var AuthService
+     */
+    protected $authService;
+
     /**
      * Login
      */
     public function loginAction()
     {
+        /** @var AuthService $auth */
+        $auth = $this->_getAuthService();
+
+        if ($auth->identity()->hasAuthenticated()) {
+            // : User is authorized
+
+            $this->redirect()->toRoute(\yimaAdminor\Module::ADMIN_ROUTE_NAME);
+            return $this->getResponse();
+        }
+
         /** @var $request \Zend\Http\PhpEnvironment\Request */
         $request = $this->getRequest();
-        if (! $request->isPost()) {
-            return ;
+
+        // Get redirect-url:
+        $redirectUrl = $auth->getGuard()->getStoredUrl();
+        if($request->isPost() && empty($redirectUrl))
+            $redirectUrl = $this->params()->fromPost('redirect_url');
+
+        if ($request->isPost()) {
+            $user = $this->params()->fromPost('login-email');
+            $pass = $this->params()->fromPost('login-pwd');
+            $rmbr = $this->params()->fromPost('login-remember-me', false);
+
+            $authAdabter = $auth->getAuthAdapter();
+            $authAdabter->credential(['username' => $user, 'password' => $pass]);
+
+            try {
+                $authAdabter->authenticate();
+            }
+            catch (WrongCredentialException $e) {
+                // set error messages
+                $this->flashMessenger('adminor.auth.message')->addErrorMessage(
+                    $this->_translator()->translate('Invalid Username Or Password')
+                );
+
+                $this->redirect()->refresh();
+
+                return $this->getResponse();
+            }
+            catch (AuthenticationException $e) {
+                // set error messages
+                $this->flashMessenger('adminor.auth.message')->addErrorMessage(
+                    $this->_translator()->translate('Activation Code Was Sent To Your Mail, Please Check Your Mailbox.')
+                );
+
+                $this->redirect()->refresh();
+
+                return $this->getResponse();
+            }
+            catch (\Exception $e) {
+                throw $e;
+            }
+
+            $authAdabter->getIdentity()
+                ->setRemember($rmbr)
+                ->login();
+
+            // Successful login redirect user:
+            if (!empty($redirectUrl))
+                $this->redirect()->toUrl($redirectUrl);
+            else
+                $this->redirect()->toRoute(\yimaAdminor\Module::ADMIN_ROUTE_NAME);
+
+            return $this->getResponse();
         }
 
-        $email = $this->params()->fromPost('email');
-        $pass  = $this->params()->fromPost('password');
+        // Build View:
 
-        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsManager');
-        $ps = $ps->get('yima_adminor'); // $ps::get('yima_adminor');
-        /** @var $ps \yimaAdminor\Auth\Permission\AclAuthentication */
-
-        /** @var $authService \Zend\Authentication\AuthenticationService */
-        $authService = $ps->getAuthService();
-
-        /** @var $authAdapter \yimaAdminor\Auth\Adapter\SimpleFile */
-        $authAdapter = $authService->getAdapter();
-        $authAdapter->setIdentity($email);
-        $authAdapter->setCredential($pass);
-
-        $result = $authService->authenticate();
-        if ($result->isValid()) {
-            $this->redirect()->toRoute(\yimaAdminor\Module::ADMIN_ROUTE_NAME);
-        } else {
-            $this->redirect()->refresh();
-        }
+        $errMessages = $this->flashMessenger('adminor.auth.message')->getErrorMessages();
+        return [
+            'messages'     => $errMessages,
+            'redirect_url' => $redirectUrl,
+        ];
     }
 
     /**
@@ -53,12 +98,25 @@ class AccountController extends AbstractActionController
      */
     public function logoutAction()
     {
-        $ps = $this->getServiceLocator()->get('yimaAuthorize.PermissionsManager');
-        $ps = $ps->get('yima_adminor'); // $ps::get('yima_adminor');
-        /** @var $ps \yimaAdminor\Auth\Permission\AclAuthentication */
-
-        $ps->getAuthService()->clearIdentity();
+        $this->_getAuthService()
+            ->identity()->logout();
 
         $this->redirect()->toRoute('yima_adminor_auth');
+    }
+
+    protected function _translator()
+    {
+        return $this->getServiceLocator()->get('MvcTranslator');
+    }
+
+    /**
+     * @return AuthService
+     */
+    protected function _getAuthService()
+    {
+        if (!$this->authService)
+            $this->authService = $this->authorize('yima_adminor');
+
+        return $this->authService;
     }
 }
