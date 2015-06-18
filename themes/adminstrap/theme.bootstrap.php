@@ -29,13 +29,7 @@ if (!$sm->get('ModuleManager')->getModule('yimaJquery'))
 /** @var $viewRenderer \Zend\View\Renderer\PhpRenderer */
 $viewRenderer = $sm->get('viewRenderer');
 
-/**
- * print it in your viewScript layout
- *
- * <?php echo $this->jQuery() ?>
- */
-$viewRenderer->jQuery()
-    ->enable()
+$viewRenderer->headScript()
     ->appendFile($viewRenderer->basePath().'/adminstrap/js/jquery.navgoco.js')
     ->appendFile($viewRenderer->basePath().'/adminstrap/js/main.js')
 ;

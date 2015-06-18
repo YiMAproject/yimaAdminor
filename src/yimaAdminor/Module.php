@@ -15,11 +15,6 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\Mvc\MvcEvent;
 
-/**
- * Class Module
- *
- * @package yimaAdminor
- */
 class Module implements
     InitProviderInterface,
     BootstrapListenerInterface,
@@ -63,10 +58,9 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
-        if (Console::isConsole()) {
+        if (Console::isConsole())
             // Admin Panel is Only Available for HTTP Request
             return false;
-        }
 
         /** @var $e MvcEvent */
         // Attach default Events to event manager         **********************\
@@ -91,7 +85,8 @@ class Module implements
     	return [
             'invokables' => [
                 # If we are on admin set admin prefix to viewModel layout on render
-                'yimaAdminor.MvcView.AdminMvcRenderStrategies' => 'yimaAdminor\Mvc\AdminMvcRenderStrategies',
+                'yimaAdminor.MvcView.AdminMvcRenderStrategies'
+                => 'yimaAdminor\Mvc\AdminMvcRenderStrategies',
             ],
     		'factories' => [
                 # Admin Navigation Menu
