@@ -6,10 +6,7 @@ use yimaTheme\Resolvers\ResolverInterface;
 use yimaTheme\Theme\LocatorDefaultInterface;
 
 /**
- * Class AdminThemeResolver
- * : serve the admin theme when we are on admin area
- *
- * @package yimaAdminor\Mvc
+ * serve the admin theme when we are on admin area
  */
 class OffCanvasAdminThemeResolver implements
     ResolverInterface,
@@ -33,13 +30,13 @@ class OffCanvasAdminThemeResolver implements
         $sm = $this->themeLocator->getServiceLocator();
 
         // get registered PermissionsManager service and retrieve plugin
-        $permissionsManager = $sm->get('yimaAuthorize.PermissionsManager');
-        /** @var $permission \yimaAuthorize\Permission\PermissionInterface */
+        $permissionsManager = $sm->get('yimaAuthorize.AuthServiceManager');
+
+        /** @var $permission \yimaAdminor\Auth\AuthService */
         $permission = $permissionsManager->get('yima_adminor');
-        if (!$permission->getIdentity()) {
+        if (!$permission->identity()->hasAuthenticated())
             // user not authorized to adminor
             return false;
-        }
 
         $config = $sm->get('config');
         if (isset($config['yima_adminor']) && is_array($config['yima_adminor'])) {

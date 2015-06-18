@@ -38,7 +38,7 @@ class AuthService extends AbstractOptions
      */
     function isAllowed(/*iAuthResource*/ $resource = null, /*iIdentity*/ $role = null)
     {
-        $role = ($role) ?: $this->getAuthAdapter()->identity();
+        $role = ($role) ?: $this->identity();
 
         if (!is_object($resource)
             || (!$resource instanceof PermResource || !method_exists($resource, 'getRouteMatch'))

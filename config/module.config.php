@@ -29,7 +29,7 @@ return [
     'yima_authorize' => [
         'services' => [
             'invokables' => [
-                'yima_adminor' => 'yimaAdminor\Auth\AclAuthService'
+                'yima_adminor' => 'yimaAdminor\Auth\AuthService'
             ],
         ],
     ],
