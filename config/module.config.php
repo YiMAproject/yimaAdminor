@@ -1,6 +1,10 @@
 <?php
 return [
     'yima_adminor' => [
+        # pass to AuthService Constructor as Options
+        'auth_service' => [
+            # 'auth_adapter' => '', // iAuthenticateAdapter service or class name
+        ],
         # default adminor template
         'default_theme' => 'adminstrap', /* @TODO: can change by setting module  */
         # auto add invokable class into ControllerManager for admin controllers that not exists
@@ -28,8 +32,8 @@ return [
     # yima authorize module config
     'yima_authorize' => [
         'services' => [
-            'invokables' => [
-                'yima_adminor' => 'yimaAdminor\Auth\AuthService'
+            'factories' => [
+                'yima_adminor' => 'yimaAdminor\Service\AuthServiceFactory'
             ],
         ],
     ],
