@@ -1,4 +1,4 @@
-<?php if ($this->authorize('yima_adminor')->isAllowed()) { ?>
+<?php if ($this->authorize('yima_adminor')->identity()->hasAuthenticated()) { ?>
 <nav class="adminor">
     <?php
     echo $this->navigation('yimaAdminor.Navigation')

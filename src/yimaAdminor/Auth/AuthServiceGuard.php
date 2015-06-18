@@ -1,7 +1,6 @@
 <?php
 namespace yimaAdminor\Auth;
 
-use Poirot\AuthSystem\Authenticate\Exceptions\AccessDeniedException;
 use yimaAdminor\Auth\Authorize\PermResource;
 use yimaAuthorize\Auth\AbstractAuthGuard;
 use yimaAuthorize\Auth\Interfaces\GuardInterface;

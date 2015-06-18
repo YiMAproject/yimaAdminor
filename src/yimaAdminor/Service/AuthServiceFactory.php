@@ -30,6 +30,16 @@ class AuthServiceFactory implements FactoryInterface
         )
             $opts = $config['auth_service'];
 
+        if (isset($opts['auth_adapter']) && $srvAdapter = $opts['auth_adapter']) {
+            if (is_string($srvAdapter)) {
+                if (!class_exists($srvAdapter))
+                    // it's a registered service
+                    $opts['auth_adapter'] = $serviceLocator->get($srvAdapter);
+                else
+                    $opts['auth_adapter'] = $serviceLocator->get($srvAdapter);
+            }
+        }
+
         $authService = new AuthService($opts);
         return $authService;
     }
