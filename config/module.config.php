@@ -28,8 +28,8 @@ return [
     # yima authorize module config
     'yima_authorize' => [
         'services' => [
-            'factories' => [
-                'yima_adminor' => 'yimaAdminor\Auth\Permission\AclAuthenticationFactory'
+            'invokables' => [
+                'yima_adminor' => 'yimaAdminor\Auth\AclAuthService'
             ],
         ],
     ],
