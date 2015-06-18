@@ -14,8 +14,6 @@ use Zend\ModuleManager\Feature\LocatorRegisteredInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\SimpleRouteStack as HttpSimpleRouteStack;
-use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class Module
@@ -38,22 +36,20 @@ class Module implements
      * Initialize workflow
      *
      * @param  ModuleManagerInterface $moduleManager
+     * @throws \Exception
      * @return void
      */
     public function init(ModuleManagerInterface $moduleManager)
     {
-        // we need this module up and runing
-        /** @var $moduleManager \Zend\ModuleManager\ModuleManager */
-        $moduleManager->loadModule('yimaAuthorize');
-
-        $loadedModules = $moduleManager->getLoadedModules();
-        if (!in_array('yimaTheme', array_keys($loadedModules))) {
+        $loadedModules   = array_keys($moduleManager->getLoadedModules(false));
+        $requiredModules = [
+            'Application', 'AssetManager', 'yimaTheme', 'yimaAuthorize',
+        ];
+        if(array_intersect($requiredModules, $loadedModules) != $requiredModules)
             throw new \Exception(
-                'YimaTheme Module Not Loaded Yet!! Adminor need yimaTheme Loaded Before.'.
-                'You can put YimaTheme higher than yimaAdminor in your application config'
+                'Adminor Module Require These Modules: '
+                . implode(', ', $requiredModules)
             );
-        }
-        // $manager->loadModule('yimaTheme');
     }
 
     /**
@@ -92,16 +88,16 @@ class Module implements
      */
     public function getServiceConfig()
     {
-    	return array(
-            'invokables' => array(
+    	return [
+            'invokables' => [
                 # If we are on admin set admin prefix to viewModel layout on render
                 'yimaAdminor.MvcView.AdminMvcRenderStrategies' => 'yimaAdminor\Mvc\AdminMvcRenderStrategies',
-            ),
-    		'factories' => array (
+            ],
+    		'factories' => [
                 # Admin Navigation Menu
     			'yimaAdminor.Navigation' => 'yimaAdminor\Service\NavigationFactory',
-    		),
-    	);
+    		],
+    	];
     }
 
     /**
@@ -111,9 +107,15 @@ class Module implements
      */
     public function getConfig()
     {
-        $confDir = realpath(__DIR__ . '/../../config');
+        $conf = [];
+        foreach (glob(__DIR__.'/../../config/*.config.php') as $conFile) {
+            $conFile = include_once $conFile;
+            if (is_array($conFile))
+                $conf = \Poirot\Core\array_merge($conf, $conFile);
+        }
 
-        return include_once $confDir.'/module.config.php';
+        // usually return like this
+        return $conf;
     }
 
     /**
@@ -123,12 +125,12 @@ class Module implements
      */
     public function getAutoloaderConfig()
     {
-        return array(
+        return [
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__,
                 ),
             ),
-        );
+        ];
     }
 }

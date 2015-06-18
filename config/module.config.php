@@ -1,60 +1,56 @@
 <?php
-return array(
-    'yima_adminor' => array(
+return [
+    'yima_adminor' => [
         # default adminor template
-        'default_theme' => 'adminstrap', /* @TODO: easily change by optional module setting */
+        'default_theme' => 'adminstrap', /* @TODO: can change by setting module  */
         # auto add invokable class into ControllerManager for admin controllers that not exists
         'auto_set_controllers' => true,
-    ),
+    ],
 
     // using specific theme for admin panel ... {
-    'yima-theme' => array(
-        'theme_locator' => array(
-            'resolver_adapter_service' => array(
+    'yima-theme' => [
+        'theme_locator' => [
+            'resolver_adapter_service' => [
                 # change template for admin panel
                 'yimaAdminor\Mvc\OffCanvasAdminThemeResolver' => 10000, // high priority for admin
-            ),
-        ),
+            ],
+        ],
 
-        'themes' => array(
+        'themes' => [
             # default adminor template
-            'adminstrap' => array(
+            'adminstrap' => [
                 'dir_path' => __DIR__ .DS. '..' .DS. 'themes',
-            ),
-        ),
-    ),
+            ],
+        ],
+    ],
     # ... }
 
     # yima authorize module config
-    'yima_authorize' => array(
-        'permissions' => array(
-            'factories' => array(
+    'yima_authorize' => [
+        'services' => [
+            'factories' => [
                 'yima_adminor' => 'yimaAdminor\Auth\Permission\AclAuthenticationFactory'
-            ),
-        ),
-    ),
+            ],
+        ],
+    ],
 
-    'controllers' => array(
-        'invokables' => array(
+    'controllers' => [
+        'invokables' => [
             # also this is automaticaly added by AdminRouteListener as invokable
             'Admin\yimaAdminor\Index' => 'yimaAdminor\Controller\Admin\IndexController',
 
             'yimaAdminor\Controller\Account' => 'yimaAdminor\Controller\AccountController'
-        ),
-    ),
+        ],
+    ],
 
-    'view_manager' => array(
-        'mvc_strategies' => array(
+    'view_manager' => [
+        'mvc_strategies' => [
             # If we are on admin set admin prefix to viewModel layout on render (registered AggregateListener Service)
             'yimaAdminor.MvcView.AdminMvcRenderStrategies',
-        ),
+        ],
 
-        'template_path_stack' => array(
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-    ),
-
-	'navigation' => include_once 'module.navigation.config.php',
-
-    'router'     => include_once 'module.route.config.php',
-);
+        ],
+    ],
+];
