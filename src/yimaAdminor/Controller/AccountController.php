@@ -37,8 +37,8 @@ class AccountController extends AbstractActionController
             $redirectUrl = $this->params()->fromPost('redirect_url');
 
         if ($request->isPost()) {
-            $user = $this->params()->fromPost('login-email');
-            $pass = $this->params()->fromPost('login-pwd');
+            $user = $this->params()->fromPost('login-username');
+            $pass = $this->params()->fromPost('login-password');
             $rmbr = $this->params()->fromPost('login-remember-me', false);
 
             $authAdabter = $auth->getAuthAdapter();
