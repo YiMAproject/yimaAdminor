@@ -190,7 +190,8 @@ class Crypto implements RouteInterface
     	$this->assembledParams = $params;
 
         array_walk($params, function(&$val, $key){
-            $val = \Poirot\Core\sanitize_camelcase($val);
+            if (in_array($key, ['module', 'controller']))
+                $val = \Poirot\Core\sanitize_camelcase($val);
         });
 
     	$query = http_build_query($params);
