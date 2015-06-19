@@ -54,7 +54,6 @@ class AccountController extends AbstractActionController
                 );
 
                 $this->redirect()->refresh();
-
                 return $this->getResponse();
             }
             catch (AuthenticationException $e) {
@@ -64,11 +63,15 @@ class AccountController extends AbstractActionController
                 );
 
                 $this->redirect()->refresh();
-
                 return $this->getResponse();
             }
             catch (\Exception $e) {
-                throw $e;
+                $this->flashMessenger('adminor.auth.message')->addErrorMessage(
+                    $this->_translator()->translate($e->getMessage())
+                );
+
+                $this->redirect()->refresh();
+                return $this->getResponse();
             }
 
             $authAdabter->getIdentity()
