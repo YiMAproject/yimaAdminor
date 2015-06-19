@@ -1,7 +1,7 @@
 <?php
 return [
     'navigation' => [
-        'admin' => [
+        'yimaAdminor.Navigation' => [
             [
                 'label' 	 => 'Adminor',
                 'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME,

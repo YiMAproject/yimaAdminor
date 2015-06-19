@@ -18,7 +18,7 @@ class NavigationFactory extends DefaultNavigationFactory
 {
     protected function getName()
     {
-        return 'admin';
+        return 'yimaAdminor.Navigation';
     }
     
     /**
