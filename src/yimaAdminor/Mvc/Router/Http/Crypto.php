@@ -188,7 +188,11 @@ class Crypto implements RouteInterface
     public function assemble(array $params = array(), array $options = array())
     {
     	$this->assembledParams = $params;
-    	
+
+        array_walk($params, function(&$val, $key){
+            $val = \Poirot\Core\sanitize_camelcase($val);
+        });
+
     	$query = http_build_query($params);
 
         return $this->route.'?'.$this->encodeQuery($query);
